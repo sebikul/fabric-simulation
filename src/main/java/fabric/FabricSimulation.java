@@ -1,6 +1,5 @@
 package fabric;
 
-import cellIndexMethod.CellIndexMethod;
 import integrators.Integrator;
 import spring.ISpring;
 
@@ -28,7 +27,6 @@ public class FabricSimulation {
     private double drop_depht;
 
     private long previousParticlesCount;
-    private CellIndexMethod cim;
 
 
     public FabricSimulation(Integrator integrator, double interval
@@ -54,28 +52,18 @@ public class FabricSimulation {
 
         this.drop_depht = drop_depth;
 
-        this.cim = new CellIndexMethod(width, height + drop_depth, n, this.diameter);
         this.previousParticlesCount = n;
     }
 
     public long simulate() {
 
         long flow = 0;
-        cim.clearGrid();
 
-        cim.addParticles(particles);
 
         particles = Collider.collisions(particles, width, height, dStart, d, k_n, k_t, drop_depht, cim);
         //VERSION ORIGINAL
         for (FabricParticle particle : particles) {
             integrator.next(particle, interval);
-            if (particle.wasInside()) {
-                double yPos = particle.getPosition().getY();
-                if (yPos < drop_depht) {
-                    particle.setOutside();
-                    flow++;
-                }
-            }
         }
 
         //VERSION CON THREADS(para N=100 tarda mas)
