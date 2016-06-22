@@ -27,6 +27,7 @@ public class FabricSpring implements ISpring {
     public void apply() {
         if (hasBeenApplied) {
             return;
+//            throw new java.lang.IllegalStateException("A spring can not be applied more than one time without calling reset.");
         }
 
         double centerDistance = particles[0].getPosition().distance(particles[1].getPosition());

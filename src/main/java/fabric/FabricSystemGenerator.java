@@ -3,23 +3,21 @@ package fabric;
 import integrators.VerletIntegratableParticle;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import particle.IParticleSystemGenerator;
+import spring.ISpring;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import spring.ISpring;
-
 public class FabricSystemGenerator implements IParticleSystemGenerator {
 
-    private final double radius;
-    private final int width;
-    private final int height;
-    private final int particleAmount;
-    private final double mass;
-    private final double springConstant;
+    private double radius = 0;
+    private int width = -1;
+    private int height = -1;
+    private double mass = 0;
+    private double springConstant = 0;
+    private double particleSeparation = 0;
 
-    private final double particleSeparation;
-    private int particleId = 0;
+    private int nextParticleId = 0;
 
     private double initialZ = 0;
 
@@ -28,24 +26,17 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     private Set<FabricParticle> particleSet;
     private Set<ISpring> springSet;
 
-    public FabricSystemGenerator(final double radius, final int width, final int height, final double mass, final double particleSeparation, final double springConstant) {
-        this.radius = radius;
-        this.width = width;
-        this.height = height;
-        this.mass = mass;
-
-        this.particleSeparation = particleSeparation;
-
-        this.particleAmount = width * height;
-
-        this.springConstant = springConstant;
-
-        this.particleSet = new HashSet<>(particleAmount);
+    public FabricSystemGenerator() {
+        this.particleSet = new HashSet<>();
         this.springSet = new HashSet<>();
     }
 
     @Override
     public void generateParticles() {
+
+        if (!areParametersSet()) {
+            throw new UnsupportedOperationException("Please set the necessary parameters first.");
+        }
 
         if (hasGeneratedParticles) {
             throw new UnsupportedOperationException("generateParticles() can only be called once.");
@@ -116,7 +107,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
                     final int xPos = i + delta[0];
                     final int yPos = j + delta[1];
 
-                    if (xPos < 0 || yPos < 0 || xPos >= width || yPos > height) {
+                    if (xPos < 0 || yPos < 0 || xPos >= width || yPos >= height) {
                         continue;
                     }
 
@@ -139,6 +130,10 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     @Override
     public Set<FabricParticle> getParticleSet() {
 
+        if (!areParametersSet()) {
+            throw new UnsupportedOperationException("Please set the necessary parameters first.");
+        }
+
         if (!hasGeneratedParticles) {
             throw new UnsupportedOperationException("Please call generateParticles() first.");
         }
@@ -148,6 +143,10 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
     public Set<ISpring> getSpringSet() {
 
+        if (!areParametersSet()) {
+            throw new UnsupportedOperationException("Please set the necessary parameters first.");
+        }
+
         if (!hasGeneratedParticles) {
             throw new UnsupportedOperationException("Please call generateParticles() first.");
         }
@@ -156,13 +155,50 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     }
 
     private int getNextParticleId() {
-        final int nextId = this.particleId;
-        this.particleId++;
+        final int nextId = this.nextParticleId;
+        this.nextParticleId++;
 
         return nextId;
     }
 
-    public void setInitialZ(double initialZ) {
+    public FabricSystemGenerator setInitialZ(final double initialZ) {
         this.initialZ = initialZ;
+        return this;
+    }
+
+    public FabricSystemGenerator setRadius(final double radius) {
+        this.radius = radius;
+
+        return this;
+    }
+
+    public FabricSystemGenerator setWidth(final int width) {
+        this.width = width;
+        return this;
+    }
+
+    public FabricSystemGenerator setHeight(final int height) {
+        this.height = height;
+        return this;
+    }
+
+    public FabricSystemGenerator setMass(final double mass) {
+        this.mass = mass;
+        return this;
+    }
+
+    public FabricSystemGenerator setSpringConstant(final double springConstant) {
+        this.springConstant = springConstant;
+        return this;
+    }
+
+    public FabricSystemGenerator setParticleSeparation(final double particleSeparation) {
+        this.particleSeparation = particleSeparation;
+
+        return this;
+    }
+
+    private boolean areParametersSet() {
+        return (radius != 0) && (width != -1) && (height != -1) && (mass != 0) && (springConstant != 0) && (particleSeparation != 0);
     }
 }
