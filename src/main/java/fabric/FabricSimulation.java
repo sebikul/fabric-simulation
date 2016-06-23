@@ -19,7 +19,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
 
     private long startTime;
 
-    public FabricSimulation(final SimulationParameters parameters, final double interval, final int width, final int height, final double particleSeparation, final double particleRadius, final double springConstant, final double mass) {
+    public FabricSimulation(final SimulationParameters parameters, final double interval, final int width, final int height, final double particleSeparation, final double particleRadius, final double springConstant, final double springNaturalDistance, final double mass) {
         super(interval, parameters.getWriterInterval());
 
         this.parameters = parameters;
@@ -28,7 +28,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
 
         fabricSystemGenerator.setWidth(width).setHeight(height);
         fabricSystemGenerator.setRadius(particleRadius).setMass(mass);
-        fabricSystemGenerator.setSpringConstant(springConstant);
+        fabricSystemGenerator.setSpringConstant(springConstant).setSpringNaturalDistance(springNaturalDistance);
         fabricSystemGenerator.setParticleSeparation(particleSeparation);
     }
 

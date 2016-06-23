@@ -14,7 +14,10 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     private int width = -1;
     private int height = -1;
     private double mass = 0;
+
     private double springConstant = 0;
+    private double springNaturalDistance = 0;
+
     private double particleSeparation = 0;
 
     private int nextParticleId = 0;
@@ -44,17 +47,17 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
         System.out.println("FabricSystemGenerator.generateParticles: Generating random particle set.");
 
-        FabricParticle[][] particleArray = new FabricParticle[width][height];
+        FabricParticle[][] particleArray = new FabricParticle[height][width];
 
         final Vector3D initialVelocity = new Vector3D(0, 0, 0);
 
         // Para cada fila de particulas
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < height; i++) {
             //Para cada columna de particulas
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < width; j++) {
 
-                final double xPosition = i * particleSeparation;
-                final double yPosition = j * particleSeparation;
+                final double xPosition = j * particleSeparation;
+                final double yPosition = i * particleSeparation;
                 final double zPosition = initialZ;
 
                 final Vector3D position = new Vector3D(xPosition, yPosition, zPosition);
@@ -94,34 +97,36 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         };
 
         // Para cada fila de particulas
-        for (int i = 0; i < width; i++) {
+        for (int i = 0; i < height; i++) {
 
             //Para cada columna de particulas
-            for (int j = 0; j < height; j++) {
+            for (int j = 0; j < width; j++) {
                 // Aca tenemos que formar los vinculos entre particulas
 
                 FabricParticle currentParticle = particleArray[i][j];
 
                 for (int[] delta : deltaVector) {
 
-                    final int xPos = i + delta[0];
-                    final int yPos = j + delta[1];
+                    final int xPos = j + delta[0];
+                    final int yPos = i + delta[1];
 
                     if (xPos < 0 || yPos < 0 || xPos >= width || yPos >= height) {
                         continue;
                     }
 
-                    FabricParticle otherParticle = particleArray[xPos][yPos];
+                    FabricParticle otherParticle = particleArray[yPos][xPos];
 
                     VerletIntegratableParticle[] particles = new VerletIntegratableParticle[]{currentParticle, otherParticle};
 
-                    ISpring spring = new FabricSpring(particles, springConstant);
+                    ISpring spring = new FabricSpring(particles, springConstant, springNaturalDistance);
                     springSet.add(spring);
                 }
 
                 particleSet.add(currentParticle);
             }
         }
+
+        particleArray[0][0].addForce(0, 0, 10);
 
         System.out.println("FabricSystemGenerator.generateParticles: Done!");
         hasGeneratedParticles = true;
@@ -192,6 +197,11 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         return this;
     }
 
+    public FabricSystemGenerator setSpringNaturalDistance(final double springNaturalDistance) {
+        this.springNaturalDistance = springNaturalDistance;
+        return this;
+    }
+
     public FabricSystemGenerator setParticleSeparation(final double particleSeparation) {
         this.particleSeparation = particleSeparation;
 
@@ -199,6 +209,6 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     }
 
     private boolean areParametersSet() {
-        return (radius != 0) && (width != -1) && (height != -1) && (mass != 0) && (springConstant != 0) && (particleSeparation != 0);
+        return (radius != 0) && (width != -1) && (height != -1) && (mass != 0) && (springConstant != 0) && (particleSeparation != 0) && (springNaturalDistance != 0);
     }
 }

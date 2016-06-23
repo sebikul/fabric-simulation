@@ -10,8 +10,9 @@ public class FabricSpring implements ISpring {
     private boolean hasBeenApplied = false;
 
     private final double k;
+    private final double naturalDistance;
 
-    public FabricSpring(VerletIntegratableParticle[] particles, final double k) {
+    public FabricSpring(VerletIntegratableParticle[] particles, final double k, final double naturalDistance) {
 
         if (particles.length != 2) {
             throw new IllegalArgumentException();
@@ -20,6 +21,7 @@ public class FabricSpring implements ISpring {
         this.particles = particles;
 
         this.k = k;
+        this.naturalDistance = naturalDistance;
     }
 
     //FIXME
@@ -30,32 +32,16 @@ public class FabricSpring implements ISpring {
 //            throw new java.lang.IllegalStateException("A spring can not be applied more than one time without calling reset.");
         }
 
-        double centerDistance = particles[0].getPosition().distance(particles[1].getPosition());
+        final Vector3D distanceVector = particles[0].getPosition().subtract(particles[1].getPosition());
 
-        Vector3D positionDifference = particles[1].getPosition().subtract(particles[0].getPosition());
-        double enx = positionDifference.getX() / centerDistance;
-        double eny = positionDifference.getY() / centerDistance;
-        double enz = positionDifference.getZ() / centerDistance; //FIXME
+        double particleDistance = distanceVector.getNorm();
+        double springForce = k * (particleDistance - naturalDistance);
 
-        double borderDistance = particles[0].getRadius() + particles[1].getRadius() - centerDistance;
+        final Vector3D forceDirection = distanceVector.normalize();
+        final Vector3D springForceVector = forceDirection.scalarMultiply(springForce);
 
-        double f_n = k * borderDistance;
-
-        Vector3D rRel = particles[1].getVelocity().subtract(particles[0].getVelocity());
-
-        //FIXME
-        Vector3D tangencialVersor = new Vector3D(-eny, enx);
-
-        double f_t = -k * borderDistance * (rRel.dotProduct(tangencialVersor));
-
-        //FIXME
-        double f_x = f_n * enx + f_t * (-eny);
-        double f_y = f_n * eny + f_t * enx;
-        double f_z = f_n * eny + f_t * enx;
-
-        //FIXME
-        particles[1].addForce(f_x, f_y, f_z);
-        particles[0].addForce(-f_x, -f_y, f_z);
+        particles[0].addForce(springForceVector);
+        particles[1].addForce(springForceVector.negate());
 
         hasBeenApplied = true;
     }
