@@ -63,8 +63,18 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
                 final Vector3D position = new Vector3D(xPosition, yPosition, zPosition);
 
                 particleArray[i][j] = new FabricParticle(getNextParticleId(), position, initialVelocity, radius, mass);
+
+                particleSet.add(particleArray[i][j]);
             }
         }
+
+        addSprings(particleArray);
+
+        System.out.println("FabricSystemGenerator.generateParticles: Done!");
+        hasGeneratedParticles = true;
+    }
+
+    private void addSprings(FabricParticle[][] particleArray) {
 
         /*
 
@@ -91,9 +101,9 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
                 {-1, 1},
                 {0, 1},
                 {-1, 0},
-                {1, 0},
-                {0, -1},
-                {1, -1}
+//                {1, 0},
+//                {0, -1},
+//                {1, -1}
         };
 
         // Para cada fila de particulas
@@ -118,18 +128,28 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
                     VerletIntegratableParticle[] particles = new VerletIntegratableParticle[]{currentParticle, otherParticle};
 
-                    ISpring spring = new FabricSpring(particles, springConstant, springNaturalDistance);
+                    double localSpringNaturalDistance = this.springNaturalDistance;
+
+                    if (xPos != j && yPos != i) {
+                        //Resorte en diagonal
+
+                        localSpringNaturalDistance = Math.sqrt(2 * particleSeparation * particleSeparation);
+                    }
+
+                    ISpring spring = new FabricSpring(particles, springConstant, localSpringNaturalDistance);
                     springSet.add(spring);
                 }
-
-                particleSet.add(currentParticle);
             }
         }
 
-        particleArray[0][0].addForce(0, 0, 10);
+        final int topRow = height - 1;
 
-        System.out.println("FabricSystemGenerator.generateParticles: Done!");
-        hasGeneratedParticles = true;
+        for (int i = 0; i < width; i++) {
+            particleArray[topRow][i].setFixed(true);
+        }
+
+        //particleArray[0][0].addForce(0, 0, 1000000000.0);
+        particleArray[0][0].setPosition(new Vector3D(0, 0, 6));
     }
 
     @Override

@@ -41,20 +41,8 @@ public abstract class VerletIntegratableParticle extends Abstract3DParticle impl
         return this.previousPosition;
     }
 
-    public double getKineticEnergy() {
-        return 0.5 * mass * velocity.dotProduct(velocity);
-    }
-
-    public void addForce(Vector3D f) {
-        forces.add(f);
-    }
-
-    public void addForce(double xComponent, double yComponent, double zComponent) {
-        forces.add(new Vector3D(xComponent, yComponent, zComponent));
-    }
-
-    public double getPotentialEnergy() {
-        return this.getWeight() * getPosition().getY();
+    public void addForce(Vector3D force) {
+        forces.add(force);
     }
 
     @Override

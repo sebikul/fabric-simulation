@@ -40,9 +40,10 @@ public class FabricSpring implements ISpring {
         final Vector3D forceDirection = distanceVector.normalize();
         final Vector3D springForceVector = forceDirection.scalarMultiply(springForce);
 
-        particles[0].addForce(springForceVector);
-        particles[1].addForce(springForceVector.negate());
-
+        if (springForceVector.getNorm() != 0) {
+            particles[1].addForce(springForceVector);
+            particles[0].addForce(springForceVector.negate());
+        }
         hasBeenApplied = true;
     }
 

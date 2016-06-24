@@ -13,18 +13,18 @@ public class Main {
     private static final double RADIUS = 1.0;
     private static final double MASS = 1.0;
 
-    private static final int WIDTH = 20;
-    private static final int HEIGHT = 10;
+    private static final int WIDTH = 10;
+    private static final int HEIGHT = 5;
 
     private static final double PARTICLE_SEPARATION = 6;
     private static final double SPRING_CONSTANT = 1000;
-    private static final double SPRING_NATURAL_DISTANCE = 5;
+    private static final double SPRING_NATURAL_DISTANCE = 6;
 
 
-    private static final double INTERVAL = 0.00001;
-    private static final double WRITER_INTERVAL = 0.01;
+    private static final double INTERVAL = 0.0001;
+    private static final double WRITER_INTERVAL = 0.1;
 
-    private static final double TIME_LIMIT = 1;
+    private static final double TIME_LIMIT = 1000;
 
     public static void main(String[] args) throws IOException {
         Locale.setDefault(new Locale("en", "US"));
