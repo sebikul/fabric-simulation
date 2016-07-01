@@ -36,7 +36,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
     public void start() {
 
         fabricSystemGenerator.generateParticles();
-
+    	//fabricSystemGenerator.generateParticlesSinusoidal(4.0);
         this.particleSet = fabricSystemGenerator.getParticleSet();
         this.springSet = fabricSystemGenerator.getSpringSet();
 

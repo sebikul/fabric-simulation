@@ -29,6 +29,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     private Set<FabricParticle> particleSet;
     private Set<ISpring> springSet;
 
+    
     public FabricSystemGenerator() {
         this.particleSet = new HashSet<>();
         this.springSet = new HashSet<>();
@@ -231,4 +232,56 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     private boolean areParametersSet() {
         return (radius != 0) && (width != -1) && (height != -1) && (mass != 0) && (springConstant != 0) && (particleSeparation != 0) && (springNaturalDistance != 0);
     }
+
+
+    //se agregar partículas en forma sinusoidal en el eje z.
+    
+    public void generateParticlesSinusoidal(double sin_divide_factor) {
+
+        if (!areParametersSet()) {
+            throw new UnsupportedOperationException("Please set the necessary parameters first.");
+        }
+
+        if (hasGeneratedParticles) {
+            throw new UnsupportedOperationException("generateParticles() can only be called once.");
+        }
+
+        System.out.println("FabricSystemGenerator.generateParticlesSinusoidal: Generating random particle set.");
+
+        FabricParticle[][] particleArray = new FabricParticle[height][width];
+
+        final Vector3D initialVelocity = new Vector3D(0, 0, 0);
+
+       int verticalLines=width;
+       double totalWidth=(verticalLines-1.0)*particleSeparation;
+       double z_values[]=new double[verticalLines];
+       
+       
+       for(int x=0;x<verticalLines;x++){
+    	   z_values[x]=Math.sin(x*particleSeparation/sin_divide_factor)*4;
+       }
+        
+        // Para cada fila de particulas
+        for (int i = 0; i < height; i++) {
+            //Para cada columna de particulas
+            for (int j = 0; j < width; j++) {
+
+                final double xPosition = j * particleSeparation;
+                final double yPosition = i * particleSeparation;
+                final double zPosition = z_values[j];
+
+                final Vector3D position = new Vector3D(xPosition, yPosition, zPosition);
+
+                particleArray[i][j] = new FabricParticle(getNextParticleId(), position, initialVelocity, radius, mass);
+
+                particleSet.add(particleArray[i][j]);
+            }
+        }
+
+        addSprings(particleArray);
+
+        System.out.println("FabricSystemGenerator.generateParticlesSinusoidal: Done!");
+        hasGeneratedParticles = true;
+    }
+
 }
