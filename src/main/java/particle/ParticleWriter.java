@@ -34,7 +34,9 @@ public class ParticleWriter {
         Vector3D pos = p.getPosition();
         Vector3D vel = p.getVelocity();
         // id posX posY mass radius
-        return String.format("%s %f %f %f %f %f %f %f\n", p.getId(), pos.getX(), pos.getY(), pos.getZ(), vel.getX(), vel.getY(), vel.getZ(), p.getRadius());
+        double velocityMagnitud=vel.getNorm();
+        		
+        return String.format("%s %f %f %f %f %f %f %f %f\n", p.getId(), pos.getX(), pos.getY(), pos.getZ(), vel.getX(), vel.getY(), vel.getZ(), p.getRadius(),velocityMagnitud);
     }
 
     public void close() {

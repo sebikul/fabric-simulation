@@ -24,7 +24,7 @@ public class Main {
     private static final double INTERVAL = 0.0001;
     private static final double WRITER_INTERVAL = 0.1;
 
-    private static final double TIME_LIMIT = 1;
+    private static final double TIME_LIMIT = 10;
 
     public static void main(String[] args) throws IOException {
         Locale.setDefault(new Locale("en", "US"));
@@ -50,8 +50,10 @@ public class Main {
 
         while (simulation.getCurrentTime() < TIME_LIMIT) {
             double currentTime = simulation.step();
-//
-//            System.out.printf("time=%g, prog= %g, remaining= %d seconds, step= %d\n", currentTime, currentTime / TIME_LIMIT, 0, System.currentTimeMillis() - last);
+           
+           long aux=(long) currentTime;
+           if(( aux % 10)==0 && aux>=1)
+                  System.out.printf("time=%g \n",currentTime );
 //
 //            last = System.currentTimeMillis();
         }
