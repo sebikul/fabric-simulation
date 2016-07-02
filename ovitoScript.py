@@ -3,10 +3,13 @@ from ovito.io import *
 from ovito.modifiers import *
 from ovito.vis import *
 import numpy
+import sys
 
+print("Leyendo datos de archivo:",sys.argv[1]) 
 
 # se carga el archivo de datos de la simulación
-node = import_file("/home/administrator/fabric-simulation/simulations/FABRIC_SIM__W=10_H=5_STEP=0.000100000_WSTEP=0.100000.xyz", columns=["Particle Identifier", "Position.X", "Position.Y", "Position.Z", "Velocity.X", "Velocity.Y", "Velocity.Z", "Radius","Velocity Magnitude"], multiple_frames = True)
+#el nombre del archivo se recibe por parametro
+node = import_file(sys.argv[1], columns=["Particle Identifier", "Position.X", "Position.Y", "Position.Z", "Velocity.X", "Velocity.Y", "Velocity.Z", "Radius","Velocity Magnitude"], multiple_frames = True)
 
 print("Total frames:",(ovito.dataset.anim.last_frame+1))
 
@@ -60,7 +63,7 @@ node.compute()
 
 
 #fin
-print("finished")
+print("finished loading in Ovito")
 
 """
 

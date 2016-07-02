@@ -3,10 +3,13 @@ from ovito.io import *
 from ovito.modifiers import *
 from ovito.vis import *
 import numpy
+import sys
 
+print("Leyendo datos de archivo:",sys.argv[1]) 
 
 # se carga el archivo de datos de la simulación
-node = import_file("/home/administrator/fabric-simulation/simulations/FABRIC_SIM__W=10_H=5_STEP=0.000100000_WSTEP=0.100000.xyz", columns=["Particle Identifier", "Position.X", "Position.Y", "Position.Z", "Velocity.X", "Velocity.Y", "Velocity.Z", "Radius","Velocity Magnitude"], multiple_frames = True)
+#el nombre del archivo se recibe por parametro
+node = import_file(sys.argv[1], columns=["Particle Identifier", "Position.X", "Position.Y", "Position.Z", "Velocity.X", "Velocity.Y", "Velocity.Z", "Radius","Velocity Magnitude"], multiple_frames = True)
 
 print("Total frames:",(ovito.dataset.anim.last_frame+1))
 
@@ -23,7 +26,7 @@ disp.enabled=False
 velocity_maximum=0
 velocity_minimum=0
 for f in range(ovito.dataset.anim.last_frame+1):
-	print("Frame:",f)
+	#print("Frame:",f)
 	# Set the time slider position:
 	ovito.dataset.anim.current_frame = f
 	node.compute()
