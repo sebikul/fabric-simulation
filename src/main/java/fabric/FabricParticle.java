@@ -16,14 +16,11 @@ public class FabricParticle extends VerletIntegratableParticle {
         return "Particle [id=" + id + ", position=" + position + ", velocity=" + velocity + "]";
     }
 
-    @Override
-    public void setPosition(Vector3D position) {
-        if (!isFixed) {
-            super.setPosition(position);
-        }
-    }
-
     public void setFixed(boolean fixed) {
         isFixed = fixed;
+    }
+
+    public boolean isFixed() {
+        return isFixed;
     }
 }

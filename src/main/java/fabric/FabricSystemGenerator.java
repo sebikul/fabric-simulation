@@ -29,7 +29,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     private Set<FabricParticle> particleSet;
     private Set<ISpring> springSet;
 
-    
+
     public FabricSystemGenerator() {
         this.particleSet = new HashSet<>();
         this.springSet = new HashSet<>();
@@ -95,13 +95,14 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         |                               |
         |   -          0          0     |
         |                               |
-        |-------------------------------
+        |-------------------------------|
          */
 
         final int[][] deltaVector = new int[][]{
                 {-1, 1},
                 {0, 1},
                 {-1, 0},
+                {-1, -1}
 //                {1, 0},
 //                {0, -1},
 //                {1, -1}
@@ -145,12 +146,15 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
         final int topRow = height - 1;
 
-        for (int i = 0; i < width; i++) {
-            particleArray[topRow][i].setFixed(true);
-        }
+//        for (int i = 0; i < width; i++) {
+//            particleArray[topRow][i].setFixed(true);
+//        }
+//
+//        particleArray[0][0].addForce(new Vector3D(0, 0, 1000000.0));
+        //particleArray[0][0].setPosition(new Vector3D(0, 0, 2));
 
-        //particleArray[0][0].addForce(0, 0, 1000000000.0);
-        particleArray[0][0].setPosition(new Vector3D(0, 0, 6));
+        particleArray[topRow][10].setFixed(true);
+
     }
 
     @Override
@@ -235,7 +239,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
 
     //se agregar partículas en forma sinusoidal en el eje z.
-    
+
     public void generateParticlesSinusoidal(double sin_divide_factor) {
 
         if (!areParametersSet()) {
@@ -252,15 +256,15 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
         final Vector3D initialVelocity = new Vector3D(0, 0, 0);
 
-       int verticalLines=width;
-       double totalWidth=(verticalLines-1.0)*particleSeparation;
-       double z_values[]=new double[verticalLines];
-       
-       
-       for(int x=0;x<verticalLines;x++){
-    	   z_values[x]=Math.sin(x*particleSeparation/sin_divide_factor)*4;
-       }
-        
+        int verticalLines = width;
+        double totalWidth = (verticalLines - 1.0) * particleSeparation;
+        double z_values[] = new double[verticalLines];
+
+
+        for (int x = 0; x < verticalLines; x++) {
+            z_values[x] = Math.sin(x * particleSeparation / sin_divide_factor) * 4;
+        }
+
         // Para cada fila de particulas
         for (int i = 0; i < height; i++) {
             //Para cada columna de particulas

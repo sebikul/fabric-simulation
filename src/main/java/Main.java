@@ -13,16 +13,15 @@ public class Main {
     private static final double RADIUS = 1.0;
     private static final double MASS = 1.0;
 
-    private static final int WIDTH = 10;
-    private static final int HEIGHT = 5;
+    private static final int WIDTH = 20;
+    private static final int HEIGHT = 20;
 
     private static final double PARTICLE_SEPARATION = 3;
     private static final double SPRING_CONSTANT = 1000;
     private static final double SPRING_NATURAL_DISTANCE = 3;
 
-
-    private static final double INTERVAL = 0.0001;
-    private static final double WRITER_INTERVAL = 0.1;
+    private static final double INTERVAL = 0.00001;
+    private static final double WRITER_INTERVAL = 0.01;
 
     private static final double TIME_LIMIT = 10;
 
@@ -50,10 +49,10 @@ public class Main {
 
         while (simulation.getCurrentTime() < TIME_LIMIT) {
             double currentTime = simulation.step();
-           
-           long aux=(long) currentTime;
-           if(( aux % 10)==0 && aux>=1)
-                  System.out.printf("time=%g \n",currentTime );
+
+//           long aux=(long) currentTime;
+//           if(( aux % 10)==0 && aux>=1)
+//                  System.out.printf("time=%g \n",currentTime );
 //
 //            last = System.currentTimeMillis();
         }

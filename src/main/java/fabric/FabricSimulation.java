@@ -1,6 +1,5 @@
 package fabric;
 
-import integrators.IIntegratableParticle;
 import integrators.Integrator;
 import simulation.SimulationParameters;
 import simulation.TimeDrivenSimulation;
@@ -36,7 +35,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
     public void start() {
 
         fabricSystemGenerator.generateParticles();
-    	//fabricSystemGenerator.generateParticlesSinusoidal(4.0);
+        //fabricSystemGenerator.generateParticlesSinusoidal(4.0);
         this.particleSet = fabricSystemGenerator.getParticleSet();
         this.springSet = fabricSystemGenerator.getSpringSet();
 
@@ -52,8 +51,10 @@ public class FabricSimulation extends TimeDrivenSimulation {
 
         springSet.forEach(ISpring::apply);
 
-        for (IIntegratableParticle particle : this.particleSet) {
-            integrator.next(particle, this.getInterval());
+        for (FabricParticle particle : this.particleSet) {
+            if (!particle.isFixed()) {
+                integrator.next(particle, this.getInterval());
+            }
         }
 
         super.step();
