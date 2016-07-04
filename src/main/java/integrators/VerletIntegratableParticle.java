@@ -47,7 +47,7 @@ public abstract class VerletIntegratableParticle extends Abstract3DParticle impl
 
     @Override
     public void setPosition(Vector3D position) {
-        this.previousPosition = position;
+        this.previousPosition = this.getPosition();
         super.setPosition(position);
     }
 
