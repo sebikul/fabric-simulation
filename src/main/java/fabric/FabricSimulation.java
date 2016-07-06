@@ -1,7 +1,5 @@
 package fabric;
 
-import integrators.Integrator;
-import simulation.SimulationParameters;
 import simulation.TimeDrivenSimulation;
 import spring.ISpring;
 
@@ -13,22 +11,19 @@ public class FabricSimulation extends TimeDrivenSimulation {
     private Set<ISpring> springSet;
     private Set<FabricParticle> particleSet;
 
-    private final SimulationParameters parameters;
+    private final FabricSimulationParameters parameters;
     private final FabricSystemGenerator fabricSystemGenerator;
 
     private long startTime;
 
-    public FabricSimulation(final SimulationParameters parameters, final double interval, final int width, final int height, final double particleSeparation, final double particleRadius, final double springConstant, final double springNaturalDistance, final double mass) {
-        super(interval, parameters.getWriterInterval());
+    public FabricSimulation(final FabricSimulationParameters parameters) {
+        super(parameters);
 
+
+        //Simple optimizacion para no tener que castear este objeto.
         this.parameters = parameters;
 
-        fabricSystemGenerator = new FabricSystemGenerator();
-
-        fabricSystemGenerator.setWidth(width).setHeight(height);
-        fabricSystemGenerator.setRadius(particleRadius).setMass(mass);
-        fabricSystemGenerator.setSpringConstant(springConstant).setSpringNaturalDistance(springNaturalDistance);
-        fabricSystemGenerator.setParticleSeparation(particleSeparation);
+        fabricSystemGenerator = new FabricSystemGenerator(parameters);
     }
 
     @Override
@@ -49,15 +44,13 @@ public class FabricSimulation extends TimeDrivenSimulation {
     @Override
     public double step() {
 
-        final Integrator integrator = parameters.getIntegrator();
+        //springSet.forEach(ISpring::apply);
+        springSet.parallelStream()
+                .forEach(ISpring::apply);
 
-        springSet.forEach(ISpring::apply);
-
-        for (FabricParticle particle : this.particleSet) {
-            if (!particle.isFixed()) {
-                integrator.next(particle, this.getInterval());
-            }
-        }
+        this.particleSet.parallelStream()
+                .filter(particle -> !particle.isFixed())
+                .forEach(particle -> parameters.getIntegrator().next(particle));
 
         super.step();
 

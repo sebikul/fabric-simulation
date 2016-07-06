@@ -24,12 +24,10 @@ public class FabricSpring implements ISpring {
         this.naturalDistance = naturalDistance;
     }
 
-    //FIXME
     @Override
     public void apply() {
         if (hasBeenApplied) {
-            return;
-//            throw new java.lang.IllegalStateException("A spring can not be applied more than one time without calling reset.");
+            throw new java.lang.IllegalStateException("A spring can not be applied more than one time without calling reset.");
         }
 
         final Vector3D distanceVector = particles[1].getPosition().subtract(particles[0].getPosition());
@@ -50,6 +48,11 @@ public class FabricSpring implements ISpring {
     @Override
     public void reset() {
         hasBeenApplied = false;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("FabricSpring{%s <--> %s}", particles[0], particles[1]);
     }
 
     @Override

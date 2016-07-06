@@ -5,25 +5,41 @@ import particle.ParticleWriter;
 
 public class SimulationParameters {
 
-    private final Integrator integrator;
-    private final ParticleWriter writer;
-    private final double writerInterval;
+    private Integrator integrator = null;
+    private ParticleWriter writer = null;
+    private double writerInterval = 0;
 
-    public SimulationParameters(Integrator integrator, ParticleWriter writer, double writerInterval) {
-        this.integrator = integrator;
-        this.writer = writer;
-        this.writerInterval = writerInterval;
+    public SimulationParameters() {
     }
 
-    public Integrator getIntegrator() {
+    public final Integrator getIntegrator() {
         return integrator;
     }
 
-    public ParticleWriter getWriter() {
+    public final ParticleWriter getWriter() {
         return writer;
     }
 
-    public double getWriterInterval() {
+    public final double getWriterInterval() {
         return writerInterval;
+    }
+
+    public SimulationParameters setIntegrator(Integrator integrator) {
+        this.integrator = integrator;
+        return this;
+    }
+
+    public SimulationParameters setWriter(ParticleWriter writer) {
+        this.writer = writer;
+        return this;
+    }
+
+    public SimulationParameters setWriterInterval(double writerInterval) {
+        this.writerInterval = writerInterval;
+        return this;
+    }
+
+    public boolean areParametersSet() {
+        return (writerInterval != 0) && (writer != null) && (integrator != null);
     }
 }

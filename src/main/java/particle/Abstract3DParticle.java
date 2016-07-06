@@ -5,6 +5,7 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 public class Abstract3DParticle implements IParticle {
 
     private static final double G = 9.81;
+    //private static final double G = 0;
 
     protected final int id;
     protected final double mass;

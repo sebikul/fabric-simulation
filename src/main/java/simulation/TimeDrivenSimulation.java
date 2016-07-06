@@ -2,20 +2,18 @@ package simulation;
 
 public abstract class TimeDrivenSimulation implements ISimulation {
 
-    private final double interval;
-    private final double writerInterval;
-
     private double currentTime = 0;
     private double lastTimeWritten = 0;
 
-    public TimeDrivenSimulation(final double simulationInterval, final double writerInterval) {
-        this.interval = simulationInterval;
-        this.writerInterval = writerInterval;
+    protected final TimeDrivenSimulationParameters parameters;
+
+    public TimeDrivenSimulation(TimeDrivenSimulationParameters parameters) {
+        this.parameters = parameters;
     }
 
     @Override
     public double step() {
-        currentTime = currentTime + interval;
+        currentTime = currentTime + parameters.getStepInterval();
 
         return currentTime;
     }
@@ -25,11 +23,11 @@ public abstract class TimeDrivenSimulation implements ISimulation {
     }
 
     public double getInterval() {
-        return interval;
+        return parameters.getStepInterval();
     }
 
     protected boolean shouldWrite() {
-        if (lastTimeWritten + writerInterval < currentTime) {
+        if (lastTimeWritten + parameters.getWriterInterval() < currentTime) {
             lastTimeWritten = currentTime;
             return true;
         }

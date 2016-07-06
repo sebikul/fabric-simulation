@@ -1,8 +1,8 @@
 import fabric.FabricSimulation;
+import fabric.FabricSimulationParameters;
 import integrators.Integrator;
 import integrators.VerletIntegrator;
 import particle.ParticleWriter;
-import simulation.SimulationParameters;
 import simulation.TimeDrivenSimulation;
 
 import java.io.IOException;
@@ -20,14 +20,18 @@ public class Main {
     private static final double SPRING_CONSTANT = 1000;
     private static final double SPRING_NATURAL_DISTANCE = 3;
 
+    private static final double FLEXION_SPRING_CONSTANT = 10;
+    private static final double FLEXION_SPRING_NATURAL_ANGLE = 0;
+
+    private static final boolean FIX_TOP_ROW = true;
+
     private static final double INTERVAL = 0.00001;
     private static final double WRITER_INTERVAL = 0.01;
 
-    private static final double TIME_LIMIT = 1;
+    private static final double TIME_LIMIT = 10;
 
     public static void main(String[] args) throws IOException {
         Locale.setDefault(new Locale("en", "US"));
-
 
         ParticleWriter writer = null;
         try {
@@ -37,11 +41,33 @@ public class Main {
             e.printStackTrace();
         }
 
-        Integrator integrator = new VerletIntegrator();
+        Integrator integrator = new VerletIntegrator(INTERVAL);
 
-        SimulationParameters parameters = new SimulationParameters(integrator, writer, WRITER_INTERVAL);
+        FabricSimulationParameters parameters = new FabricSimulationParameters();
 
-        TimeDrivenSimulation simulation = new FabricSimulation(parameters, INTERVAL, WIDTH, HEIGHT, PARTICLE_SEPARATION, RADIUS, SPRING_CONSTANT, SPRING_NATURAL_DISTANCE, MASS);
+        //Simulation
+        parameters.setIntegrator(integrator)
+                .setWriter(writer)
+                .setWriterInterval(WRITER_INTERVAL);
+
+        //TimeDrivenSimulation
+        parameters.setStepInterval(INTERVAL);
+
+        //FabricSimulation
+        parameters.setWidth(WIDTH)
+                .setHeight(HEIGHT)
+                .setRadius(RADIUS)
+                .setMass(MASS)
+                .setSpringConstant(SPRING_CONSTANT)
+                .setSpringNaturalDistance(SPRING_NATURAL_DISTANCE)
+                .setFlexionSpringConstant(FLEXION_SPRING_CONSTANT)
+                .setFlexionSpringNaturalAngle(FLEXION_SPRING_NATURAL_ANGLE)
+                .setParticleSeparation(PARTICLE_SEPARATION)
+                .setFixParticles(FIX_TOP_ROW)
+                .setDamping(true);
+
+
+        TimeDrivenSimulation simulation = new FabricSimulation(parameters);
 
         simulation.start();
 

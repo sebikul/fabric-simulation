@@ -4,6 +4,7 @@ package integrators;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import particle.Abstract3DParticle;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public abstract class VerletIntegratableParticle extends Abstract3DParticle impl
 
         this.previousPosition = position;
 
-        this.forces = new LinkedList<>();
+        this.forces = Collections.synchronizedList(new LinkedList<>());
     }
 
     @Override

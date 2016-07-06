@@ -10,27 +10,25 @@ import java.util.Set;
 
 public class FabricSystemGenerator implements IParticleSystemGenerator {
 
-    private double radius = 0;
-    private int width = -1;
-    private int height = -1;
-    private double mass = 0;
-
-    private double springConstant = 0;
-    private double springNaturalDistance = 0;
-
-    private double particleSeparation = 0;
-
     private int nextParticleId = 0;
-
-    private double initialZ = 0;
 
     private boolean hasGeneratedParticles = false;
 
     private Set<FabricParticle> particleSet;
     private Set<ISpring> springSet;
 
+    private FabricParticle[][] particleArray;
 
-    public FabricSystemGenerator() {
+    private final FabricSimulationParameters parameters;
+
+    public FabricSystemGenerator(final FabricSimulationParameters parameters) {
+
+        if (!parameters.areParametersSet()) {
+            throw new UnsupportedOperationException("Please set the necessary parameters first.");
+        }
+
+        this.parameters = parameters;
+
         this.particleSet = new HashSet<>();
         this.springSet = new HashSet<>();
     }
@@ -38,24 +36,25 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     @Override
     public void generateParticles() {
 
-        if (!areParametersSet()) {
-            throw new UnsupportedOperationException("Please set the necessary parameters first.");
-        }
-
         if (hasGeneratedParticles) {
             throw new UnsupportedOperationException("generateParticles() can only be called once.");
         }
 
         System.out.println("FabricSystemGenerator.generateParticles: Generating random particle set.");
 
-        FabricParticle[][] particleArray = new FabricParticle[height][width];
+        this.particleArray = new FabricParticle[parameters.getHeight()][parameters.getWidth()];
 
         final Vector3D initialVelocity = new Vector3D(0, 0, 0);
 
+        final double radius = parameters.getRadius();
+        final double mass = parameters.getMass();
+        final double particleSeparation = parameters.getParticleSeparation();
+        final double initialZ = parameters.getInitialZ();
+
         // Para cada fila de particulas
-        for (int i = 0; i < height; i++) {
+        for (int i = 0; i < parameters.getHeight(); i++) {
             //Para cada columna de particulas
-            for (int j = 0; j < width; j++) {
+            for (int j = 0; j < parameters.getWidth(); j++) {
 
                 final double xPosition = j * particleSeparation;
                 final double yPosition = i * particleSeparation;
@@ -69,13 +68,19 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
             }
         }
 
-        addSprings(particleArray);
+        addFabricSprings();
+        addFlexionSprings();
+
+        if (parameters.hasToFixParticles()) {
+            setFixedParticles();
+        }
+
 
         System.out.println("FabricSystemGenerator.generateParticles: Done!");
         hasGeneratedParticles = true;
     }
 
-    private void addSprings(FabricParticle[][] particleArray) {
+    private void addFabricSprings() {
 
         /*
 
@@ -89,11 +94,11 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         |                               |
         |                               |
         |                               |
-        |   0          +          0     |
+        |   0          +          -     |
         |                               |
         |                               |
         |                               |
-        |   -          0          0     |
+        |   0          -          -     |
         |                               |
         |-------------------------------|
          */
@@ -107,6 +112,12 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 //                {0, -1},
 //                {1, -1}
         };
+
+        final double height = parameters.getHeight();
+        final double width = parameters.getWidth();
+        final double springNaturalDistance = parameters.getSpringNaturalDistance();
+        final double particleSeparation = parameters.getParticleSeparation();
+        final double springConstant = parameters.getSpringConstant();
 
         // Para cada fila de particulas
         for (int i = 0; i < height; i++) {
@@ -130,7 +141,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
                     VerletIntegratableParticle[] particles = new VerletIntegratableParticle[]{currentParticle, otherParticle};
 
-                    double localSpringNaturalDistance = this.springNaturalDistance;
+                    double localSpringNaturalDistance = springNaturalDistance;
 
                     if (xPos != j && yPos != i) {
                         //Resorte en diagonal
@@ -144,24 +155,124 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
             }
         }
 
-        final int topRow = height - 1;
+
+        particleArray[0][0].addForce(new Vector3D(0, 0, 10000000.0));
+        //particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 6.0));
+
+    }
+
+    private void addFlexionSprings() {
+
+        /*
+
+        + = Particula actual
+        0 = Particulas con las que se vincula
+        - = Otras particulas
+
+        |-------------------------------------------------------|
+        |                                                       |
+        |   -          -          0          -          -       |
+        |                                                       |
+        |                                                       |
+        |                                                       |
+        |   -          -          -          -          -       |
+        |                                                       |
+        |                                                       |
+        |                                                       |
+        |   ?          -          +          -          0       |
+        |                                                       |
+        |                                                       |
+        |                                                       |
+        |   -          -          -          -          -       |
+        |                                                       |
+        |                                                       |
+        |                                                       |
+        |   -          -          ?          -          -       |
+        |                                                       |
+        |-------------------------------------------------------|
+         */
+
+        final int[][] deltaVector = new int[][]{
+                //{-2, 0},
+                {2, 0},
+                //{0, -2},
+                {0, 2}
+        };
+
+        final double height = parameters.getHeight();
+        final double width = parameters.getWidth();
+
+        final double flexionSpringConstant = parameters.getFlexionSpringConstant();
+        final double flexionSpringNaturalAngle = parameters.getFlexionSpringNaturalAngle();
+
+        // Para cada fila de particulas
+        for (int i = 0; i < height; i++) {
+
+            //Para cada columna de particulas
+            for (int j = 0; j < width; j++) {
+                // Aca tenemos que formar los vinculos entre particulas
+
+                FabricParticle currentParticle = particleArray[i][j];
+
+                for (int[] delta : deltaVector) {
+
+                    final int xPos = j + delta[0];
+                    final int yPos = i + delta[1];
+
+                    if (xPos < 0 || yPos < 0 || xPos >= width || yPos >= height) {
+                        continue;
+                    }
+
+                    FabricParticle otherParticle = particleArray[yPos][xPos];
+
+                    VerletIntegratableParticle[] particles = new VerletIntegratableParticle[]{currentParticle, otherParticle};
+
+                    VerletIntegratableParticle through = null;
+
+                    int throughYPos;
+                    int throughXPos;
+
+                    if (delta[0] == 0) {
+                        // delta_x=0
+
+                        throughYPos = i + delta[1] / 2;
+                        throughXPos = xPos;
+                    } else if (delta[1] == 0) {
+                        // delta_y=0
+
+                        throughXPos = j + delta[0] / 2;
+                        throughYPos = yPos;
+                    } else {
+                        throw new IllegalArgumentException("Invalid delta vector.");
+                    }
+
+                    through = particleArray[throughYPos][throughXPos];
+
+                    ISpring spring = new FlexionSpring(particles, through, flexionSpringConstant, flexionSpringNaturalAngle, parameters.getStepInterval());
+
+                    if (parameters.isDampingEnabled()) {
+                        ((FlexionSpring) spring).setDamping(parameters.isDampingEnabled());
+                    }
+                    springSet.add(spring);
+                }
+            }
+        }
+
+    }
+
+    private void setFixedParticles() {
+
+        final int topRow = parameters.getHeight() - 1;
+
+        final double width = parameters.getWidth();
 
         for (int i = 0; i < width; i++) {
             particleArray[topRow][i].setFixed(true);
         }
-
-//        particleArray[0][0].addForce(new Vector3D(0, 0, 10.0));
-        particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 2.0));
-
-
     }
 
     @Override
     public Set<FabricParticle> getParticleSet() {
-
-        if (!areParametersSet()) {
-            throw new UnsupportedOperationException("Please set the necessary parameters first.");
-        }
 
         if (!hasGeneratedParticles) {
             throw new UnsupportedOperationException("Please call generateParticles() first.");
@@ -171,10 +282,6 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
     }
 
     public Set<ISpring> getSpringSet() {
-
-        if (!areParametersSet()) {
-            throw new UnsupportedOperationException("Please set the necessary parameters first.");
-        }
 
         if (!hasGeneratedParticles) {
             throw new UnsupportedOperationException("Please call generateParticles() first.");
@@ -190,60 +297,10 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         return nextId;
     }
 
-    public FabricSystemGenerator setInitialZ(final double initialZ) {
-        this.initialZ = initialZ;
-        return this;
-    }
-
-    public FabricSystemGenerator setRadius(final double radius) {
-        this.radius = radius;
-
-        return this;
-    }
-
-    public FabricSystemGenerator setWidth(final int width) {
-        this.width = width;
-        return this;
-    }
-
-    public FabricSystemGenerator setHeight(final int height) {
-        this.height = height;
-        return this;
-    }
-
-    public FabricSystemGenerator setMass(final double mass) {
-        this.mass = mass;
-        return this;
-    }
-
-    public FabricSystemGenerator setSpringConstant(final double springConstant) {
-        this.springConstant = springConstant;
-        return this;
-    }
-
-    public FabricSystemGenerator setSpringNaturalDistance(final double springNaturalDistance) {
-        this.springNaturalDistance = springNaturalDistance;
-        return this;
-    }
-
-    public FabricSystemGenerator setParticleSeparation(final double particleSeparation) {
-        this.particleSeparation = particleSeparation;
-
-        return this;
-    }
-
-    private boolean areParametersSet() {
-        return (radius != 0) && (width != -1) && (height != -1) && (mass != 0) && (springConstant != 0) && (particleSeparation != 0) && (springNaturalDistance != 0);
-    }
-
 
     //se agregar partículas en forma sinusoidal en el eje z.
 
     public void generateParticlesSinusoidal(double sin_divide_factor) {
-
-        if (!areParametersSet()) {
-            throw new UnsupportedOperationException("Please set the necessary parameters first.");
-        }
 
         if (hasGeneratedParticles) {
             throw new UnsupportedOperationException("generateParticles() can only be called once.");
@@ -251,11 +308,16 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
         System.out.println("FabricSystemGenerator.generateParticlesSinusoidal: Generating random particle set.");
 
-        FabricParticle[][] particleArray = new FabricParticle[height][width];
+        final double radius = parameters.getRadius();
+        final double mass = parameters.getMass();
+        final double particleSeparation = parameters.getParticleSeparation();
+        final double initialZ = parameters.getInitialZ();
+
+        this.particleArray = new FabricParticle[parameters.getHeight()][parameters.getWidth()];
 
         final Vector3D initialVelocity = new Vector3D(0, 0, 0);
 
-        int verticalLines = width;
+        int verticalLines = parameters.getWidth();
         double totalWidth = (verticalLines - 1.0) * particleSeparation;
         double z_values[] = new double[verticalLines];
 
@@ -265,9 +327,9 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         }
 
         // Para cada fila de particulas
-        for (int i = 0; i < height; i++) {
+        for (int i = 0; i < parameters.getHeight(); i++) {
             //Para cada columna de particulas
-            for (int j = 0; j < width; j++) {
+            for (int j = 0; j < parameters.getWidth(); j++) {
 
                 final double xPosition = j * particleSeparation;
                 final double yPosition = i * particleSeparation;
@@ -281,7 +343,10 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
             }
         }
 
-        addSprings(particleArray);
+        addFabricSprings();
+        addFlexionSprings();
+
+        setFixedParticles();
 
         System.out.println("FabricSystemGenerator.generateParticlesSinusoidal: Done!");
         hasGeneratedParticles = true;
