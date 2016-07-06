@@ -41,6 +41,8 @@ public class FabricSimulation extends TimeDrivenSimulation {
 
         startTime = System.currentTimeMillis();
 
+        System.out.println("Writing simulation data to: " + parameters.getWriter().getWriterPath());
+
         parameters.getWriter().write(getCurrentTime(), particleSet);
     }
 

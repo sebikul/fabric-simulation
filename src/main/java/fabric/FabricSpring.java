@@ -32,10 +32,10 @@ public class FabricSpring implements ISpring {
 //            throw new java.lang.IllegalStateException("A spring can not be applied more than one time without calling reset.");
         }
 
-        final Vector3D distanceVector = particles[0].getPosition().subtract(particles[1].getPosition());
+        final Vector3D distanceVector = particles[1].getPosition().subtract(particles[0].getPosition());
 
         double particleDistance = distanceVector.getNorm();
-        double springForce = k * (particleDistance - naturalDistance);
+        double springForce = -k * (particleDistance - naturalDistance);
 
         final Vector3D forceDirection = distanceVector.normalize();
         final Vector3D springForceVector = forceDirection.scalarMultiply(springForce);

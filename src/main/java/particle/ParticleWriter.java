@@ -10,9 +10,15 @@ import java.util.Set;
 public class ParticleWriter {
 
     private final BufferedWriter writer;
+    private final String fileName;
 
-    public ParticleWriter(String fileName) throws IOException {
+    public ParticleWriter(final String fileName) throws IOException {
+        this.fileName = fileName;
         writer = new BufferedWriter(new FileWriter(fileName));
+    }
+
+    public String getWriterPath() {
+        return fileName;
     }
 
     public void write(final double time, final Set<? extends IParticle> particles) {
@@ -34,9 +40,9 @@ public class ParticleWriter {
         Vector3D pos = p.getPosition();
         Vector3D vel = p.getVelocity();
         // id posX posY mass radius
-        double velocityMagnitud=vel.getNorm();
-        		
-        return String.format("%s %f %f %f %f %f %f %f %f\n", p.getId(), pos.getX(), pos.getY(), pos.getZ(), vel.getX(), vel.getY(), vel.getZ(), p.getRadius(),velocityMagnitud);
+        double velocityMagnitud = vel.getNorm();
+
+        return String.format("%s %f %f %f %f %f %f %f %f\n", p.getId(), pos.getX(), pos.getY(), pos.getZ(), vel.getX(), vel.getY(), vel.getZ(), p.getRadius(), velocityMagnitud);
     }
 
     public void close() {

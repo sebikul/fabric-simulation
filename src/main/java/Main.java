@@ -23,7 +23,7 @@ public class Main {
     private static final double INTERVAL = 0.00001;
     private static final double WRITER_INTERVAL = 0.01;
 
-    private static final double TIME_LIMIT = 10;
+    private static final double TIME_LIMIT = 1;
 
     public static void main(String[] args) throws IOException {
         Locale.setDefault(new Locale("en", "US"));

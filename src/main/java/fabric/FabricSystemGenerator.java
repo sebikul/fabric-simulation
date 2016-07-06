@@ -146,14 +146,13 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
         final int topRow = height - 1;
 
-//        for (int i = 0; i < width; i++) {
-//            particleArray[topRow][i].setFixed(true);
-//        }
-//
-//        particleArray[0][0].addForce(new Vector3D(0, 0, 1000000.0));
-        //particleArray[0][0].setPosition(new Vector3D(0, 0, 2));
+        for (int i = 0; i < width; i++) {
+            particleArray[topRow][i].setFixed(true);
+        }
 
-        particleArray[topRow][10].setFixed(true);
+//        particleArray[0][0].addForce(new Vector3D(0, 0, 10.0));
+        particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 2.0));
+
 
     }
 

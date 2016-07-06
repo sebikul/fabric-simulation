@@ -23,4 +23,11 @@ public class FabricParticle extends VerletIntegratableParticle {
     public boolean isFixed() {
         return isFixed;
     }
+
+    @Override
+    public void addForce(Vector3D force) {
+        if (!isFixed) {
+            super.addForce(force);
+        }
+    }
 }
