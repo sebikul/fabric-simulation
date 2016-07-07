@@ -69,7 +69,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         }
 
         addFabricSprings();
-        addFlexionSprings();
+        addTorsionSprings();
 
         if (parameters.hasToFixParticles()) {
             setFixedParticles();
@@ -161,7 +161,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
     }
 
-    private void addFlexionSprings() {
+    private void addTorsionSprings() {
 
         /*
 
@@ -202,8 +202,8 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         final double height = parameters.getHeight();
         final double width = parameters.getWidth();
 
-        final double flexionSpringConstant = parameters.getFlexionSpringConstant();
-        final double flexionSpringNaturalAngle = parameters.getFlexionSpringNaturalAngle();
+        final double torsionSpringConstant = parameters.getTorsionSpringConstant();
+        final double torsionSpringNaturalAngle = parameters.getTorsionSpringNaturalAngle();
 
         // Para cada fila de particulas
         for (int i = 0; i < height; i++) {
@@ -248,10 +248,10 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
                     through = particleArray[throughYPos][throughXPos];
 
-                    ISpring spring = new FlexionSpring(particles, through, flexionSpringConstant, flexionSpringNaturalAngle, parameters.getStepInterval());
+                    ISpring spring = new TorsionSpring(particles, through, torsionSpringConstant, torsionSpringNaturalAngle, parameters.getStepInterval());
 
                     if (parameters.isDampingEnabled()) {
-                        ((FlexionSpring) spring).setDamping(parameters.isDampingEnabled());
+                        ((TorsionSpring) spring).setDamping(parameters.isDampingEnabled());
                     }
                     springSet.add(spring);
                 }
@@ -344,7 +344,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         }
 
         addFabricSprings();
-        addFlexionSprings();
+        addTorsionSprings();
 
         setFixedParticles();
 

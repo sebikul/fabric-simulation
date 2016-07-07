@@ -24,6 +24,9 @@ public class ParticleWriter {
     public void write(final double time, final Set<? extends IParticle> particles) {
 
         try {
+
+            System.out.println("Writing for time= " + time);
+
             writer.write(String.format("%d\nTime = %g\n", particles.size(), time));
 
             for (IParticle particle : particles) {

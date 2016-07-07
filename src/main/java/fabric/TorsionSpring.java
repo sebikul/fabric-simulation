@@ -4,7 +4,7 @@ import integrators.VerletIntegratableParticle;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import spring.ISpring;
 
-public class FlexionSpring implements ISpring {
+public class TorsionSpring implements ISpring {
 
     private final VerletIntegratableParticle[] particles;
     private final VerletIntegratableParticle through;
@@ -20,7 +20,7 @@ public class FlexionSpring implements ISpring {
 
     private boolean damping = false;
 
-    public FlexionSpring(VerletIntegratableParticle[] particles, VerletIntegratableParticle through, final double k, final double naturalAngle, double stepInterval) {
+    public TorsionSpring(VerletIntegratableParticle[] particles, VerletIntegratableParticle through, final double k, final double naturalAngle, double stepInterval) {
         this.through = through;
         this.stepInterval = stepInterval;
 
@@ -81,7 +81,7 @@ public class FlexionSpring implements ISpring {
         final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2);
         particles[1].addForce(springForceVector2);
 
-        previousAngle=angle;
+        previousAngle = angle;
 
         hasBeenApplied = true;
     }
@@ -98,7 +98,7 @@ public class FlexionSpring implements ISpring {
 
     @Override
     public String toString() {
-        return String.format("FlexionSpring{%s <--> %s <--> %s}", particles[0], through, particles[1]);
+        return String.format("TorsionSpring{%s <--> %s <--> %s}", particles[0], through, particles[1]);
     }
 
     public void setDamping(boolean damping) {

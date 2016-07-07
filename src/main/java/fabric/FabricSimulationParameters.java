@@ -12,8 +12,8 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
     private double springConstant = 0;
     private double springNaturalDistance = 0;
 
-    private double flexionSpringConstant = 0;
-    private double flexionSpringNaturalAngle = -1;
+    private double torsionSpringConstant = 0;
+    private double torsionSpringNaturalAngle = -1;
     private boolean enableDamping;
 
     private double particleSeparation = 0;
@@ -92,13 +92,13 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
         return this;
     }
 
-    public FabricSimulationParameters setFlexionSpringConstant(double flexionSpringConstant) {
-        this.flexionSpringConstant = flexionSpringConstant;
+    public FabricSimulationParameters setTorsionSpringConstant(double torsionSpringConstant) {
+        this.torsionSpringConstant = torsionSpringConstant;
         return this;
     }
 
-    public FabricSimulationParameters setFlexionSpringNaturalAngle(double flexionSpringNaturalAngle) {
-        this.flexionSpringNaturalAngle = flexionSpringNaturalAngle;
+    public FabricSimulationParameters setTorsionSpringNaturalAngle(double torsionSpringNaturalAngle) {
+        this.torsionSpringNaturalAngle = torsionSpringNaturalAngle;
         return this;
     }
 
@@ -110,17 +110,17 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
                 (springConstant != 0) &&
                 (springNaturalDistance != 0) &&
                 (particleSeparation != 0) &&
-                (flexionSpringConstant != 0) &&
-                (flexionSpringNaturalAngle != -1) &&
+                (torsionSpringConstant != 0) &&
+                (torsionSpringNaturalAngle != -1) &&
                 super.areParametersSet();
     }
 
-    public double getFlexionSpringConstant() {
-        return flexionSpringConstant;
+    public double getTorsionSpringConstant() {
+        return torsionSpringConstant;
     }
 
-    public double getFlexionSpringNaturalAngle() {
-        return flexionSpringNaturalAngle;
+    public double getTorsionSpringNaturalAngle() {
+        return torsionSpringNaturalAngle;
     }
 
     public double getInitialZ() {
