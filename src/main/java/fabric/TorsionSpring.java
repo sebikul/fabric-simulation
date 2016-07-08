@@ -55,14 +55,14 @@ public class TorsionSpring implements ISpring {
 
         final double angle = Vector3D.angle(distanceVector1, distanceVector2);
 
+        if (angle == naturalAngle) {
+            return;
+        }
+
         double springTorque = -k * (angle - naturalAngle);
 
         if (damping) {
             springTorque -= gamma * (angle - previousAngle) / stepInterval;
-        }
-
-        if (springTorque == 0) {
-            return;
         }
 
         final double distance1 = distanceVector1.getNorm();
@@ -73,12 +73,16 @@ public class TorsionSpring implements ISpring {
 
         final Vector3D orthogonalVector = distanceVector1.crossProduct(distanceVector2);
 
-        final Vector3D springForceVersor1 = orthogonalVector.crossProduct(distanceVector1).normalize();
-        final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1);
+//        final Vector3D springForceVersor1 = orthogonalVector.crossProduct(distanceVector1).normalize();
+//        final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1);
+        final Vector3D springForceVersor1 = orthogonalVector.crossProduct(distanceVector1);
+        final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1 / springForceVersor1.getNorm());
         particles[0].addForce(springForceVector1);
 
-        final Vector3D springForceVersor2 = orthogonalVector.crossProduct(distanceVector2).normalize();
-        final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2);
+//        final Vector3D springForceVersor2 = orthogonalVector.crossProduct(distanceVector2).normalize();
+//        final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2);
+        final Vector3D springForceVersor2 = orthogonalVector.crossProduct(distanceVector2);
+        final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2 / springForceVersor2.getNorm());
         particles[1].addForce(springForceVector2);
 
         previousAngle = angle;

@@ -42,4 +42,5 @@ public class SimulationParameters {
     public boolean areParametersSet() {
         return (writerInterval != 0) && (writer != null) && (integrator != null);
     }
+
 }

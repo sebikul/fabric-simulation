@@ -23,19 +23,21 @@ public class Main {
     private static final double TORSION_SPRING_CONSTANT = 10;
     private static final double TORSION_SPRING_NATURAL_ANGLE = 0;
 
-    private static final boolean FIX_TOP_ROW = true;
+    private static final boolean FIX_TOP_ROW = false;
+    private static final boolean ENABLE_GRAVITY = true;
+    private static final boolean ENABLE_TORSION_DAMPING = true;
 
     private static final double INTERVAL = 0.00001;
-    private static final double WRITER_INTERVAL = 0.01;
+    private static final double WRITER_INTERVAL = 0.016666; //A 60 FPS es RT
 
-    private static final double TIME_LIMIT = 20;
+    private static final double TIME_LIMIT = 30;
 
     public static void main(String[] args) throws IOException {
         Locale.setDefault(new Locale("en", "US"));
 
         ParticleWriter writer = null;
         try {
-            String outputFilename = String.format("simulations/FABRIC_SIM__W=%d_H=%d_STEP=%g_WSTEP=%g.xyz", WIDTH, HEIGHT, INTERVAL, WRITER_INTERVAL);
+            String outputFilename = String.format("simulations/FABRIC_SIM__W=%d_H=%d_STEP=%g_WSTEP=%g_GRAV=%b_DAMPING=%b.xyz", WIDTH, HEIGHT, INTERVAL, WRITER_INTERVAL, ENABLE_GRAVITY, ENABLE_TORSION_DAMPING);
             writer = new ParticleWriter(outputFilename);
         } catch (IOException e) {
             e.printStackTrace();
@@ -64,7 +66,8 @@ public class Main {
                 .setTorsionSpringNaturalAngle(TORSION_SPRING_NATURAL_ANGLE)
                 .setParticleSeparation(PARTICLE_SEPARATION)
                 .setFixParticles(FIX_TOP_ROW)
-                .setDamping(true);
+                .setDamping(ENABLE_TORSION_DAMPING)
+                .setGravityEnabled(ENABLE_GRAVITY);
 
 
         TimeDrivenSimulation simulation = new FabricSimulation(parameters);
@@ -75,7 +78,7 @@ public class Main {
             double currentTime = simulation.step();
         }
 
-        long elapsedTime = simulation.end();
+        long elapsedTime = simulation.stop();
 
         System.out.println("ElapsedTime: " + elapsedTime);
     }

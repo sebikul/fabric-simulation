@@ -26,7 +26,7 @@ public class FabricSpring implements ISpring {
 
     @Override
     public void apply() {
-        if (hasBeenApplied) {
+        if (hasBeenApplied()) {
             throw new java.lang.IllegalStateException("A spring can not be applied more than one time without calling reset.");
         }
 
@@ -35,8 +35,9 @@ public class FabricSpring implements ISpring {
         double particleDistance = distanceVector.getNorm();
         double springForce = -k * (particleDistance - naturalDistance);
 
-        final Vector3D forceDirection = distanceVector.normalize();
-        final Vector3D springForceVector = forceDirection.scalarMultiply(springForce);
+        //Probar optimizacion. Multiplicar directamente por (1/norma)*fuerza
+//        final Vector3D forceDirection = distanceVector.normalize();
+        final Vector3D springForceVector = distanceVector.scalarMultiply(springForce / distanceVector.getNorm());
 
         if (springForceVector.getNorm() != 0) {
             particles[1].addForce(springForceVector);

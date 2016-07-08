@@ -12,6 +12,8 @@ public class ParticleWriter {
     private final BufferedWriter writer;
     private final String fileName;
 
+    private double lastTime = System.currentTimeMillis();
+
     public ParticleWriter(final String fileName) throws IOException {
         this.fileName = fileName;
         writer = new BufferedWriter(new FileWriter(fileName));
@@ -25,7 +27,11 @@ public class ParticleWriter {
 
         try {
 
-            System.out.println("Writing for time= " + time);
+            final long currentTime = System.currentTimeMillis();
+
+            System.out.printf("Writing for time= %g renderingTime= %g\n", time, currentTime - lastTime);
+
+            lastTime = currentTime;
 
             writer.write(String.format("%d\nTime = %g\n", particles.size(), time));
 

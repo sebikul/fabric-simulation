@@ -8,8 +8,6 @@ public interface IParticle {
 
     double getMass();
 
-    double getWeight();
-
     double getRadius();
 
     Vector3D getPosition();
@@ -20,3 +18,4 @@ public interface IParticle {
 
     void setVelocity(final Vector3D velocity);
 }
+

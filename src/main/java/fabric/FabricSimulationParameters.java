@@ -20,6 +20,8 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
 
     private double initialZ = 0;
 
+    private boolean gravityEnabled = false;
+
     private boolean fixParticles;
 
     public double getRadius() {
@@ -143,5 +145,15 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
 
     public boolean isDampingEnabled() {
         return enableDamping;
+    }
+
+
+    public FabricSimulationParameters setGravityEnabled(final boolean gravity) {
+        this.gravityEnabled = gravity;
+        return this;
+    }
+
+    public boolean isGravityEnabled() {
+        return gravityEnabled;
     }
 }

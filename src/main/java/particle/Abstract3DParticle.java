@@ -4,9 +4,6 @@ import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 
 public class Abstract3DParticle implements IParticle {
 
-    private static final double G = 9.81;
-    //private static final double G = 0;
-
     protected final int id;
     protected final double mass;
     protected Vector3D position;
@@ -39,11 +36,6 @@ public class Abstract3DParticle implements IParticle {
     @Override
     public double getMass() {
         return mass;
-    }
-
-    @Override
-    public double getWeight() {
-        return this.getMass() * G;
     }
 
     @Override

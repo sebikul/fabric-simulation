@@ -8,3 +8,4 @@ public interface ISpring {
 
     boolean hasBeenApplied();
 }
+

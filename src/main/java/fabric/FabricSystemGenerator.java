@@ -75,6 +75,11 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
             setFixedParticles();
         }
 
+//        particleArray[0][1].setFixed(true);
+//        particleArray[0][2].setFixed(true);
+//
+//        particleArray[0][0].setInitialPosition(new Vector3D(3, 3, 0));
+        //particleArray[0][0].addForce(new Vector3D(-1000, 0, 0));
 
         System.out.println("FabricSystemGenerator.generateParticles: Done!");
         hasGeneratedParticles = true;

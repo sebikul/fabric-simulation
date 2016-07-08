@@ -1,5 +1,6 @@
 package fabric;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import simulation.TimeDrivenSimulation;
 import spring.ISpring;
 
@@ -7,12 +8,13 @@ import java.util.Set;
 
 public class FabricSimulation extends TimeDrivenSimulation {
 
-
     private Set<ISpring> springSet;
     private Set<FabricParticle> particleSet;
 
     private final FabricSimulationParameters parameters;
     private final FabricSystemGenerator fabricSystemGenerator;
+
+    private static final double G = 9.81;
 
     private long startTime;
 
@@ -39,32 +41,45 @@ public class FabricSimulation extends TimeDrivenSimulation {
         System.out.println("Writing simulation data to: " + parameters.getWriter().getWriterPath());
 
         parameters.getWriter().write(getCurrentTime(), particleSet);
+
+        System.out.println("Total Particles = " + particleSet.size());
+        System.out.println("Total Springs = " + springSet.size());
     }
 
     @Override
     public double step() {
 
-        //springSet.forEach(ISpring::apply);
+        // Aplicamos los resortes
         springSet.parallelStream()
                 .forEach(ISpring::apply);
 
-        this.particleSet.parallelStream()
+        //En caso de estar habilitado, agregamos el peso a cada particula
+        if (parameters.isGravityEnabled()) {
+            final Vector3D weight = new Vector3D(0, -parameters.getMass() * G, 0);
+            particleSet.forEach(particle -> particle.addForce(weight));
+        }
+
+        //Integramos el movimiento en base a las fuerzas
+        particleSet.parallelStream()
                 .filter(particle -> !particle.isFixed())
                 .forEach(particle -> parameters.getIntegrator().next(particle));
 
+        // Avanzamos el tiempo de la simulacion
         super.step();
 
-        if (this.shouldWrite()) {
+        //Si se debe escribir, se guarda una instantanea de las particulas
+        if (shouldWrite()) {
             parameters.getWriter().write(getCurrentTime(), particleSet);
         }
 
+        //Reseteamos los resortes p
         springSet.forEach(ISpring::reset);
 
         return getCurrentTime();
     }
 
     @Override
-    public long end() {
+    public long stop() {
         parameters.getWriter().close();
 
         return System.currentTimeMillis() - startTime;

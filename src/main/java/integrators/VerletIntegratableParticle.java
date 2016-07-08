@@ -4,6 +4,7 @@ package integrators;
 import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
 import particle.Abstract3DParticle;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,13 +19,13 @@ public abstract class VerletIntegratableParticle extends Abstract3DParticle impl
 
         this.previousPosition = position;
 
-        this.forces = Collections.synchronizedList(new LinkedList<>());
+        this.forces = Collections.synchronizedList(new ArrayList<>());
     }
 
     @Override
     public Vector3D getTotalForces() {
         double ansX = 0.0;
-        double ansY = -this.getWeight();
+        double ansY = 0.0;
         double ansZ = 0.0;
 
         for (Vector3D force : forces) {
