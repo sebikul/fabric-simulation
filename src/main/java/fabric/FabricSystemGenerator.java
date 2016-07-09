@@ -161,7 +161,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         }
 
         //fuerza inicial
-       // particleArray[0][0].addForce(new Vector3D(0, 0, 10000000.0));
+        particleArray[0][0].addForce(new Vector3D(0, 0, 10000000.0));
         //particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 6.0));
 
     }
