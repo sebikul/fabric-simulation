@@ -41,7 +41,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
         System.out.println("Writing simulation data to: " + parameters.getWriter().getWriterPath());
 
         parameters.getWriter().write(getCurrentTime(), particleSet);
-
+        parameters.getEnergyWriter().writeEnergies(getCurrentTime(), particleSet, springSet);
         System.out.println("Total Particles = " + particleSet.size());
         System.out.println("Total Springs = " + springSet.size());
     }
@@ -50,7 +50,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
     public double step() {
 
         // Aplicamos los resortes
-        springSet.parallelStream()
+        springSet.stream()
                 .forEach(ISpring::apply);
 
         //En caso de estar habilitado, agregamos el peso a cada particula
@@ -60,7 +60,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
         }
 
         //Integramos el movimiento en base a las fuerzas
-        particleSet.parallelStream()
+        particleSet.stream()
                 .filter(particle -> !particle.isFixed())
                 .forEach(particle -> parameters.getIntegrator().next(particle));
 
@@ -70,6 +70,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
         //Si se debe escribir, se guarda una instantanea de las particulas
         if (shouldWrite()) {
             parameters.getWriter().write(getCurrentTime(), particleSet);
+            parameters.getEnergyWriter().writeEnergies(getCurrentTime(), particleSet,springSet);
         }
 
         //Reseteamos los resortes p
@@ -81,7 +82,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
     @Override
     public long stop() {
         parameters.getWriter().close();
-
+        parameters.getEnergyWriter().close();
         return System.currentTimeMillis() - startTime;
     }
 

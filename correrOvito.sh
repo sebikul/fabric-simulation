@@ -7,7 +7,7 @@
 # el binario ovito debe apuntar al ejecutable "ovitos" no a "ovito".
 binario_Ovito='/home/administrator/Downloads/ovito-2.6.2-x86_64/bin/ovitos'
 
-simulationData="/home/administrator/fabric-simulation/simulations/FABRIC_SIM__W=10_H=5_STEP=0.000100000_WSTEP=0.100000.xyz"
+simulationData="/home/administrator/fabric-simulation/simulations/FABRIC_SIM__W=10_H=10_STEP=1.00000e-05_WSTEP=0.100000_GRAV=true_DAMPING=true.xyz"
 
 ovitoScript="./ovitoScript.py"
 

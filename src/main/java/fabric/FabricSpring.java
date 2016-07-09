@@ -60,4 +60,15 @@ public class FabricSpring implements ISpring {
     public boolean hasBeenApplied() {
         return hasBeenApplied;
     }
+
+	@Override
+	public double getElasticEnergy() {
+		return 0.5*k*Math.pow(this.getCompression(), 2);
+	}
+	
+	public double getCompression(){
+		final Vector3D distanceVector = particles[1].getPosition().subtract(particles[0].getPosition());
+		
+		return  naturalDistance-distanceVector.getNorm();
+	}
 }

@@ -108,4 +108,20 @@ public class TorsionSpring implements ISpring {
     public void setDamping(boolean damping) {
         this.damping = damping;
     }
+    
+    
+    @Override
+	public double getElasticEnergy() {
+		return 0.5*k*Math.pow(this.getCompression(), 2);
+	}
+	
+	public double getCompression(){
+		 final Vector3D distanceVector1 = through.getPosition().subtract(particles[0].getPosition());
+	        final Vector3D distanceVector2 = particles[1].getPosition().subtract(through.getPosition());
+
+	        final double angle = Vector3D.angle(distanceVector1, distanceVector2);
+
+
+	       return angle-naturalAngle;
+	}
 }

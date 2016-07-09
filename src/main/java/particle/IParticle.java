@@ -17,5 +17,9 @@ public interface IParticle {
     void setPosition(final Vector3D position);
 
     void setVelocity(final Vector3D velocity);
+
+	double getKineticEnergy();
+
+	double getPotentialEnergy();
 }
 

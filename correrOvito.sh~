@@ -5,7 +5,6 @@
 
 
 # el binario ovito debe apuntar al ejecutable "ovitos" no a "ovito".
-
 binario_Ovito='/home/administrator/Downloads/ovito-2.6.2-x86_64/bin/ovitos'
 
 simulationData="/home/administrator/fabric-simulation/simulations/FABRIC_SIM__W=10_H=5_STEP=0.000100000_WSTEP=0.100000.xyz"
@@ -13,7 +12,7 @@ simulationData="/home/administrator/fabric-simulation/simulations/FABRIC_SIM__W=
 ovitoScript="./ovitoScript.py"
 
 # Se abre la interfaz gráfica de ovito con el colormap seteado
-# El parámetro "-g" es el que activa la interfaz grafica.Si lo sacas, no se ve y se trabaja solo por consola.
+# El parámetro "-g" es el que activa la interfaz grafica.Si lo sacas, no se ve graficamente y se trabaja solo por consola.
 
 commandLine="$binario_Ovito -g $ovitoScript $simulationData"
 #echo "$commandLine"

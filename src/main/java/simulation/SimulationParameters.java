@@ -1,6 +1,7 @@
 package simulation;
 
 import integrators.Integrator;
+import particle.EnergyWriter;
 import particle.ParticleWriter;
 
 public class SimulationParameters {
@@ -8,7 +9,9 @@ public class SimulationParameters {
     private Integrator integrator = null;
     private ParticleWriter writer = null;
     private double writerInterval = 0;
-
+    private EnergyWriter energyWriter=null;
+    
+    
     public SimulationParameters() {
     }
 
@@ -43,4 +46,14 @@ public class SimulationParameters {
         return (writerInterval != 0) && (writer != null) && (integrator != null);
     }
 
+	public SimulationParameters setEnergyWriter(EnergyWriter energyWriter) {
+		
+		this.energyWriter=energyWriter;
+		
+		return this;
+	}
+
+	public final EnergyWriter getEnergyWriter(){
+		return energyWriter;
+	}
 }

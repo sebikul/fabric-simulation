@@ -7,5 +7,7 @@ public interface ISpring {
     void reset();
 
     boolean hasBeenApplied();
+
+	double getElasticEnergy();
 }
 

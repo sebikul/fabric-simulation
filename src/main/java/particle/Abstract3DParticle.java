@@ -9,7 +9,7 @@ public class Abstract3DParticle implements IParticle {
     protected Vector3D position;
     protected double radius;
     protected Vector3D velocity;
-
+    protected final double G=9.8;
     public Abstract3DParticle(int id, Vector3D position, Vector3D velocity, double radius, double mass) {
         this.id = id;
         this.position = position;
@@ -52,4 +52,14 @@ public class Abstract3DParticle implements IParticle {
     public void setPosition(Vector3D position) {
         this.position = position;
     }
+
+	@Override
+	public double getKineticEnergy() {
+		return 0.5* mass * Math.pow(velocity.getNorm(),2.0);
+	}
+
+	@Override
+	public double getPotentialEnergy() {
+		return mass*G*position.getY();
+	}
 }

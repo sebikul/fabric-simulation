@@ -19,7 +19,7 @@ public abstract class VerletIntegratableParticle extends Abstract3DParticle impl
 
         this.previousPosition = position;
 
-        this.forces = Collections.synchronizedList(new ArrayList<>());
+        this.forces =new ArrayList<>();
     }
 
     @Override
