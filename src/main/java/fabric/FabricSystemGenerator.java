@@ -154,14 +154,23 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
                         localSpringNaturalDistance = Math.sqrt(2 * particleSeparation * particleSeparation);
                     }
 
-                    ISpring spring = new FabricSpring(particles, springConstant, localSpringNaturalDistance);
+                    ISpring spring = new FabricSpring(particles, springConstant, localSpringNaturalDistance, parameters.getStepInterval());
+                    spring.setDamping(parameters.isDampingEnabled());
+
                     springSet.add(spring);
                 }
             }
         }
 
 
-        particleArray[0][0].addForce(new Vector3D(0, 0, 10000000.0));
+        for (int k = 0; k < width; k++) {
+            particleArray[0][k].setFixed(true);
+            particleArray[19][k].addForce(new Vector3D(0, 0, 10000000.0));
+        }
+
+//        particleArray[0][19].setFixed(true);
+//        particleArray[19][0].addForce(new Vector3D(0, 0, 10000000.0));
+//        particleArray[19][19].addForce(new Vector3D(0, 0, 10000000.0));
         //particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 6.0));
 
     }
@@ -254,10 +263,8 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
                     through = particleArray[throughYPos][throughXPos];
 
                     ISpring spring = new TorsionSpring(particles, through, torsionSpringConstant, torsionSpringNaturalAngle, parameters.getStepInterval());
+                    spring.setDamping(parameters.isDampingEnabled());
 
-                    if (parameters.isDampingEnabled()) {
-                        ((TorsionSpring) spring).setDamping(parameters.isDampingEnabled());
-                    }
                     springSet.add(spring);
                 }
             }

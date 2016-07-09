@@ -7,5 +7,7 @@ public interface ISpring {
     void reset();
 
     boolean hasBeenApplied();
+
+    void setDamping(boolean damping);
 }
 
