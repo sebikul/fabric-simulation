@@ -1,5 +1,5 @@
 graphics_toolkit('gnuplot')
-data= csvread ('../simulations/Kinetic__W=3_H=3_STEP=1.00000e-05_WSTEP=0.100000_GRAV=true_DAMPING=true.csv');
+data= csvread ('../simulations/Kinetic__W=4_H=4_STEP=1.00000e-05_WSTEP=0.100000_GRAV=true_DAMPING=exp-1.0_ANGLE=0.0.csv');
 
 time=data(:,1);
 kinetic=data(:,2);

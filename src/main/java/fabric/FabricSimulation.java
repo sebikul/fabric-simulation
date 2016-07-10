@@ -17,7 +17,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
 	private static final double G = 9.81;
 
 	private long startTime;
-
+	private static final double eps=Math.pow(10, -5);
 	public FabricSimulation(final FabricSimulationParameters parameters) {
 		super(parameters);
 
@@ -30,8 +30,8 @@ public class FabricSimulation extends TimeDrivenSimulation {
 	@Override
 	public void start() {
 
-		fabricSystemGenerator.generateParticles();
-		// fabricSystemGenerator.generateParticlesSinusoidal(4.0);
+		//fabricSystemGenerator.generateParticles();
+		 fabricSystemGenerator.generateParticlesSinusoidal(0.2);
 		this.particleSet = fabricSystemGenerator.getParticleSet();
 		this.springSet = fabricSystemGenerator.getSpringSet();
 
@@ -62,7 +62,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
         if(parameters.isDampingEnabled()){
         	//double dampingCoeficient=Math.pow(10, 1)*2;
         	double dampingCoeficient=parameters.getViscousDampingCoeficient();
-        	double eps=Math.pow(10, -5);
+        	
         	
         	for(FabricParticle particle: particleSet){
         		

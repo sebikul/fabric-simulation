@@ -1,5 +1,7 @@
 package fabric;
 
+import org.apache.commons.math3.geometry.euclidean.threed.Vector3D;
+
 import simulation.TimeDrivenSimulationParameters;
 
 public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
@@ -25,6 +27,8 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
     private boolean fixParticles;
 
     private double viscousDamping=-1.0;
+    
+    private Vector3D initialForce=null;
     
     public double getRadius() {
         return radius;
@@ -116,7 +120,7 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
                 (particleSeparation != 0) &&
                 (torsionSpringConstant != 0) &&
                 (torsionSpringNaturalAngle != -1) &&
-                (viscousDamping!=-1)&&
+                (initialForce!=null)&&
                 super.areParametersSet();
     }
 
@@ -169,4 +173,13 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
     	this.viscousDamping=coefcient;
     	return this;
     }
+    
+    public FabricSimulationParameters setInitialForce(Vector3D force){
+    	this.initialForce=force;
+    	return this;
+    }
+
+	public Vector3D getIntialForce() {
+		return initialForce;
+	}
 }

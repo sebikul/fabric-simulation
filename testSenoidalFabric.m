@@ -1,5 +1,5 @@
-WIDTH= 10
-HEIGHT =5
+WIDTH= 4
+HEIGHT =4
 PARTICLE_SEPARATION= 3;
 INITIAL_Z=0;
 
@@ -8,8 +8,9 @@ index=1;
 
 
 vertical_lines=WIDTH;
+DIVIDE_FACTOR=.2;
 totaL_width=(vertical_lines-1)*PARTICLE_SEPARATION;
-z_values=sin((0:PARTICLE_SEPARATION:totaL_width)./4)
+z_values=sin((0:PARTICLE_SEPARATION:totaL_width)./DIVIDE_FACTOR)
 
 for i=1:HEIGHT
   
