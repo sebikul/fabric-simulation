@@ -154,7 +154,9 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
                         localSpringNaturalDistance = Math.sqrt(2 * particleSeparation * particleSeparation);
                     }
 
-                    ISpring spring = new FabricSpring(particles, springConstant, localSpringNaturalDistance);
+                    ISpring spring = new FabricSpring(particles, springConstant, localSpringNaturalDistance, parameters.getStepInterval());
+                    spring.setDamping(parameters.isDampingEnabled());
+
                     springSet.add(spring);
                 }
             }
@@ -162,6 +164,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
         //fuerza inicial
         particleArray[0][0].addForce(new Vector3D(0, 0, 10000000.0));
+
         //particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 6.0));
 
     }
@@ -254,10 +257,8 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
                     through = particleArray[throughYPos][throughXPos];
 
                     ISpring spring = new TorsionSpring(particles, through, torsionSpringConstant, torsionSpringNaturalAngle, parameters.getStepInterval());
+                    spring.setDamping(parameters.isDampingEnabled());
 
-                    if (parameters.isDampingEnabled()) {
-                        ((TorsionSpring) spring).setDamping(parameters.isDampingEnabled());
-                    }
                     springSet.add(spring);
                 }
             }

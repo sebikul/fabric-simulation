@@ -10,9 +10,15 @@ public class FabricSpring implements ISpring {
     private boolean hasBeenApplied = false;
 
     private final double k;
+    private final double gamma;
     private final double naturalDistance;
 
-    public FabricSpring(VerletIntegratableParticle[] particles, final double k, final double naturalDistance) {
+    private double previousDistance;
+    private final double stepInterval;
+
+    private boolean damping = false;
+
+    public FabricSpring(VerletIntegratableParticle[] particles, final double k, final double naturalDistance, double stepInterval) {
 
         if (particles.length != 2) {
             throw new IllegalArgumentException();
@@ -22,6 +28,15 @@ public class FabricSpring implements ISpring {
 
         this.k = k;
         this.naturalDistance = naturalDistance;
+
+        this.stepInterval = stepInterval;
+
+        // 2* sqrt(2/5*K*M*R^2)
+        this.gamma = 2.0 * Math.sqrt(k * (2.0 / 5.0) * particles[0].getMass() * particles[0].getRadius() * particles[0].getRadius());
+
+
+        final Vector3D distanceVector = particles[1].getPosition().subtract(particles[0].getPosition());
+        this.previousDistance = distanceVector.getNorm();
     }
 
     @Override
@@ -35,6 +50,10 @@ public class FabricSpring implements ISpring {
         double particleDistance = distanceVector.getNorm();
         double springForce = -k * (particleDistance - naturalDistance);
 
+        if (damping) {
+            springForce -= gamma * (particleDistance - previousDistance) / stepInterval;
+        }
+
         //Probar optimizacion. Multiplicar directamente por (1/norma)*fuerza
 //        final Vector3D forceDirection = distanceVector.normalize();
         final Vector3D springForceVector = distanceVector.scalarMultiply(springForce / distanceVector.getNorm());
@@ -43,6 +62,9 @@ public class FabricSpring implements ISpring {
             particles[1].addForce(springForceVector);
             particles[0].addForce(springForceVector.negate());
         }
+
+        previousDistance = particleDistance;
+
         hasBeenApplied = true;
     }
 
@@ -61,6 +83,7 @@ public class FabricSpring implements ISpring {
         return hasBeenApplied;
     }
 
+
 	@Override
 	public double getElasticEnergy() {
 		return 0.5*k*Math.pow(this.getCompression(), 2);
@@ -71,4 +94,9 @@ public class FabricSpring implements ISpring {
 		
 		return  naturalDistance-distanceVector.getNorm();
 	}
+
+    @Override
+    public void setDamping(boolean damping) {
+        this.damping = damping;
+    }
 }

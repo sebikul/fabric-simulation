@@ -108,6 +108,7 @@ public class TorsionSpring implements ISpring {
         return String.format("TorsionSpring{%s <--> %s <--> %s}", particles[0], through, particles[1]);
     }
 
+    @Override
     public void setDamping(boolean damping) {
         this.damping = damping;
     }

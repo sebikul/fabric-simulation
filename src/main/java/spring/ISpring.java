@@ -9,5 +9,6 @@ public interface ISpring {
     boolean hasBeenApplied();
 
 	double getElasticEnergy();
+    void setDamping(boolean damping);
 }
 
