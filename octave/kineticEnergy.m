@@ -1,5 +1,5 @@
 graphics_toolkit('gnuplot')
-data= csvread ('../simulations/Kinetic__W=3_H=2_STEP=1.00000e-05_WSTEP=0.100000_GRAV=true_DAMPING=false.csv');
+data= csvread ('../simulations/Kinetic__W=3_H=2_STEP=1.00000e-05_WSTEP=0.100000_GRAV=true_DAMPING=true.csv');
 
 time=data(:,1);
 kinetic=data(:,2);
@@ -13,11 +13,11 @@ totalEnergy=data(:,5);
 #legend('Ek prom','Epot elastica prom');
 
 
-#plot(time,kinetic,time,potentialSpring);
-#legend('Ek prom', 'Epot elastica prom');
+plot(time,kinetic,time,potentialSpring);
+legend('Ek prom', 'Epot elastica prom');
 
-plot(time,totalEnergy);
-legend('Etot');
+#plot(time,totalEnergy);
+#legend('Etot');
 
 
 xlabel('Tiempo');

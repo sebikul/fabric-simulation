@@ -69,7 +69,7 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
         }
 
         addFabricSprings();
-        addTorsionSprings();
+      //  addTorsionSprings();
 
         if (parameters.hasToFixParticles()) {
             setFixedParticles();

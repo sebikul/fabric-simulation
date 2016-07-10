@@ -12,7 +12,7 @@ public class TorsionSpring implements ISpring {
     private boolean hasBeenApplied = false;
 
     private final double k;
-    private final double gamma;
+   // private final double gamma;
     private final double naturalAngle;
 
     private double previousAngle;
@@ -35,7 +35,7 @@ public class TorsionSpring implements ISpring {
         // 2* sqrt(2/5*K*M*R^2)
         //this.gamma = 2.0 * Math.sqrt(k * (2.0 / 5.0) * through.getMass() * through.getRadius() * through.getRadius());
         
-        this.gamma=2*Math.pow(10, -7);
+       // this.gamma=2*Math.pow(10, -7);
         this.naturalAngle = naturalAngle;
 
         final Vector3D distanceVector1 = through.getPosition().subtract(particles[0].getPosition());
@@ -62,9 +62,9 @@ public class TorsionSpring implements ISpring {
         
         double springTorque = -k * (angle - naturalAngle);
 
-        if (damping) {
-            springTorque -= gamma * (angle - previousAngle) / stepInterval;
-        }
+//        if (damping) {
+//            springTorque -= gamma * (angle - previousAngle) / stepInterval;
+//        }
 
         final double distance1 = distanceVector1.getNorm();
         final double distance2 = distanceVector2.getNorm();

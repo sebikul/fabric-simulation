@@ -10,7 +10,7 @@ public class FabricSpring implements ISpring {
     private boolean hasBeenApplied = false;
 
     private final double k;
-    private final double gamma;
+   //private final double gamma;
     private final double naturalDistance;
 
     private double previousDistance;
@@ -32,9 +32,7 @@ public class FabricSpring implements ISpring {
         this.stepInterval = stepInterval;
 
         // 2* sqrt(2/5*K*M*R^2)
-        this.gamma = 2.0 * Math.sqrt(k * (2.0 / 5.0) * particles[0].getMass() * particles[0].getRadius() * particles[0].getRadius());
-
-
+        //this.gamma = 2.0 * Math.sqrt(k * (2.0 / 5.0) * particles[0].getMass() * particles[0].getRadius() * particles[0].getRadius());
         final Vector3D distanceVector = particles[1].getPosition().subtract(particles[0].getPosition());
         this.previousDistance = distanceVector.getNorm();
     }
@@ -50,9 +48,9 @@ public class FabricSpring implements ISpring {
         double particleDistance = distanceVector.getNorm();
         double springForce = -k * (particleDistance - naturalDistance);
 
-        if (damping) {
-            springForce -= gamma * (particleDistance - previousDistance) / stepInterval;
-        }
+//        if (damping) {
+//            springForce -= gamma * (particleDistance - previousDistance) / stepInterval;
+//        }
 
         //Probar optimizacion. Multiplicar directamente por (1/norma)*fuerza
 //        final Vector3D forceDirection = distanceVector.normalize();

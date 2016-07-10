@@ -28,7 +28,7 @@ public class Main {
 
     private static final boolean FIX_TOP_ROW = true;
     private static final boolean ENABLE_GRAVITY = true;
-    private static final boolean ENABLE_TORSION_DAMPING =false;
+    private static final boolean ENABLE_TORSION_DAMPING =true;
 
     private static final double INTERVAL = 0.00001;
     private static final double WRITER_INTERVAL = 0.1; //A 60 FPS es RT

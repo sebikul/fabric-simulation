@@ -24,6 +24,7 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
 
     private boolean fixParticles;
 
+    
     public double getRadius() {
         return radius;
     }
@@ -156,4 +157,11 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
     public boolean isGravityEnabled() {
         return gravityEnabled;
     }
+    public double getViscousDampingCoeficient(){
+    	// 2* sqrt(2/5*K*M*R^2)
+        return  2.0 * Math.sqrt(springConstant * (2.0 / 5.0) * mass *Math.pow(radius, 2));
+
+    	
+    }
+    
 }
