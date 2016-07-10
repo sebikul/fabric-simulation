@@ -16,7 +16,7 @@ public class Main {
 
 
     private static final int WIDTH = 3;
-    private static final int HEIGHT = 2;
+    private static final int HEIGHT = 3;
 
 
     private static final double PARTICLE_SEPARATION = 3;
@@ -34,7 +34,7 @@ public class Main {
     private static final double WRITER_INTERVAL = 0.1; //A 60 FPS es RT
 
 
-    private static final double TIME_LIMIT = 100;
+    private static final double TIME_LIMIT = 50;
 
 
     public static void main(String[] args) throws IOException {
@@ -81,7 +81,8 @@ public class Main {
                 .setParticleSeparation(PARTICLE_SEPARATION)
                 .setFixParticles(FIX_TOP_ROW)
                 .setDamping(ENABLE_TORSION_DAMPING)
-                .setGravityEnabled(ENABLE_GRAVITY);
+                .setGravityEnabled(ENABLE_GRAVITY)
+                .setViscousDamping(Math.pow(10, -1));
 
 
         TimeDrivenSimulation simulation = new FabricSimulation(parameters);

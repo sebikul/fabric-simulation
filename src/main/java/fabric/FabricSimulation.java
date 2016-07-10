@@ -79,7 +79,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
         		}
         		
         		
-        		Vector3D dampingDirection=particle.getVelocity().normalize();
+        		Vector3D dampingDirection=particle.getVelocity();
         		
         		Vector3D dampingForce=dampingDirection.scalarMultiply(-dampingCoeficient);
         		particle.addForce(dampingForce);

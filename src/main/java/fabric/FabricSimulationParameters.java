@@ -24,6 +24,7 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
 
     private boolean fixParticles;
 
+    private double viscousDamping=-1.0;
     
     public double getRadius() {
         return radius;
@@ -115,6 +116,7 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
                 (particleSeparation != 0) &&
                 (torsionSpringConstant != 0) &&
                 (torsionSpringNaturalAngle != -1) &&
+                (viscousDamping!=-1)&&
                 super.areParametersSet();
     }
 
@@ -159,9 +161,12 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
     }
     public double getViscousDampingCoeficient(){
     	// 2* sqrt(2/5*K*M*R^2)
-        return  2.0 * Math.sqrt(springConstant * (2.0 / 5.0) * mass *Math.pow(radius, 2));
-
-    	
+        //return  2.0 * Math.sqrt(springConstant * (2.0 / 5.0) * mass *Math.pow(radius, 2));
+    	//return Math.pow(10, -1);
+    	return viscousDamping;
     }
-    
+    public FabricSimulationParameters setViscousDamping(double coefcient){
+    	this.viscousDamping=coefcient;
+    	return this;
+    }
 }
