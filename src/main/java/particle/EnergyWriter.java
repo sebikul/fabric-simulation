@@ -46,7 +46,7 @@ public class EnergyWriter {
     	double meanKinetic=totalKineticEnergy/particleCount;
     	double meanTotal=totalEnergy/particleCount;
     	
-    	String line=String.format("%f, %f, %f, %f,%f\n", time,meanKinetic,meanPot,meanElastic,meanTotal);
+    	String line=String.format("%f, %f, %f, %f, %f\n", time,meanKinetic,meanPot,meanElastic,meanTotal);
     	try {
 			writer.write(line);
 		} catch (IOException e) {

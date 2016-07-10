@@ -33,8 +33,9 @@ public class TorsionSpring implements ISpring {
         this.k = k;
 
         // 2* sqrt(2/5*K*M*R^2)
-        this.gamma = 2.0 * Math.sqrt(k * (2.0 / 5.0) * through.getMass() * through.getRadius() * through.getRadius());
-
+        //this.gamma = 2.0 * Math.sqrt(k * (2.0 / 5.0) * through.getMass() * through.getRadius() * through.getRadius());
+        
+        this.gamma=2*Math.pow(10, -7);
         this.naturalAngle = naturalAngle;
 
         final Vector3D distanceVector1 = through.getPosition().subtract(particles[0].getPosition());
@@ -58,7 +59,7 @@ public class TorsionSpring implements ISpring {
         if (angle == naturalAngle) {
             return;
         }
-
+        
         double springTorque = -k * (angle - naturalAngle);
 
         if (damping) {
@@ -76,13 +77,15 @@ public class TorsionSpring implements ISpring {
 //        final Vector3D springForceVersor1 = orthogonalVector.crossProduct(distanceVector1).normalize();
 //        final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1);
         final Vector3D springForceVersor1 = orthogonalVector.crossProduct(distanceVector1);
-        final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1 / springForceVersor1.getNorm());
+        //final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1 / springForceVersor1.getNorm());
+        final Vector3D springForceVector1 = springForceVersor1.normalize().scalarMultiply(springForce1);
         particles[0].addForce(springForceVector1);
 
 //        final Vector3D springForceVersor2 = orthogonalVector.crossProduct(distanceVector2).normalize();
 //        final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2);
         final Vector3D springForceVersor2 = orthogonalVector.crossProduct(distanceVector2);
-        final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2 / springForceVersor2.getNorm());
+       // final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2 / springForceVersor2.getNorm());
+        final Vector3D springForceVector2 = springForceVersor2.normalize().scalarMultiply(springForce2);
         particles[1].addForce(springForceVector2);
 
         previousAngle = angle;
@@ -124,4 +127,12 @@ public class TorsionSpring implements ISpring {
 
 	       return angle-naturalAngle;
 	}
+	
+	public  VerletIntegratableParticle[] getParticles(){
+		return particles;
+	}
+	public VerletIntegratableParticle getThrough(){
+		return this.through;
+	}
+	
 }
