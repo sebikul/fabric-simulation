@@ -8,48 +8,49 @@ import java.util.Set;
 
 public class FabricSimulation extends TimeDrivenSimulation {
 
-	private Set<ISpring> springSet;
-	private Set<FabricParticle> particleSet;
+    private Set<ISpring> springSet;
+    private Set<FabricParticle> particleSet;
 
-	private final FabricSimulationParameters parameters;
-	private final FabricSystemGenerator fabricSystemGenerator;
+    private final FabricSimulationParameters parameters;
+    private final FabricSystemGenerator fabricSystemGenerator;
 
-	private static final double G = 9.81;
+    private static final double G = 9.81;
 
-	private long startTime;
+    private long startTime;
 
-	public FabricSimulation(final FabricSimulationParameters parameters) {
-		super(parameters);
+    public FabricSimulation(final FabricSimulationParameters parameters) {
+        super(parameters);
 
-		// Simple optimizacion para no tener que castear este objeto.
-		this.parameters = parameters;
+        // Simple optimizacion para no tener que castear este objeto.
+        this.parameters = parameters;
 
-		fabricSystemGenerator = new FabricSystemGenerator(parameters);
-	}
+        fabricSystemGenerator = new FabricSystemGenerator(parameters);
+    }
 
-	@Override
-	public void start() {
+    @Override
+    public void start() {
 
-		fabricSystemGenerator.generateParticles();
-		// fabricSystemGenerator.generateParticlesSinusoidal(4.0);
-		this.particleSet = fabricSystemGenerator.getParticleSet();
-		this.springSet = fabricSystemGenerator.getSpringSet();
+        //fabricSystemGenerator.generateParticles();
+        fabricSystemGenerator.generateParticlesSinusoidal(4.0);
+        this.particleSet = fabricSystemGenerator.getParticleSet();
+        this.springSet = fabricSystemGenerator.getSpringSet();
 
-		startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
 
-		System.out.println("Writing simulation data to: " + parameters.getWriter().getWriterPath());
+        System.out.println("Writing simulation data to: " + parameters.getWriter().getWriterPath());
 
-		parameters.getWriter().write(getCurrentTime(), particleSet);
-		parameters.getEnergyWriter().writeEnergies(getCurrentTime(), particleSet, springSet);
-		System.out.println("Total Particles = " + particleSet.size());
-		System.out.println("Total Springs = " + springSet.size());
-	}
+        parameters.getWriter().write(getCurrentTime(), particleSet);
+        parameters.getEnergyWriter().writeEnergies(getCurrentTime(), particleSet, springSet);
 
-	@Override
+        System.out.println("Total Particles = " + particleSet.size());
+        System.out.println("Total Springs = " + springSet.size());
+    }
+
+    @Override
     public double step() {
 
         // Aplicamos los resortes
-        springSet.stream()
+        springSet.parallelStream()
                 .forEach(ISpring::apply);
 
         //En caso de estar habilitado, agregamos el peso a cada particula
@@ -57,41 +58,29 @@ public class FabricSimulation extends TimeDrivenSimulation {
             final Vector3D weight = new Vector3D(0, -parameters.getMass() * G, 0);
             particleSet.forEach(particle -> particle.addForce(weight));
         }
-        
+
         //Se agrega amortiguación viscosa (solo si esta habilitada).
-        if(parameters.isDampingEnabled()){
-        	//double dampingCoeficient=Math.pow(10, 1)*2;
-        	double dampingCoeficient=parameters.getViscousDampingCoeficient();
-        	double eps=Math.pow(10, -5);
-        	
-        	for(FabricParticle particle: particleSet){
-        		
-        		Vector3D velocity=particle.getVelocity();
-        		double vx=velocity.getX();
-        		double vy=velocity.getY();
-        		double vz=velocity.getZ();
-        		
-        		if(vx<eps && vx>-eps
-        			&& vy<eps && vy>-eps
-        			&& vz<eps && vz>-eps){
-        				continue;
-        		
-        		}
-        		
-        		
-        		Vector3D dampingDirection=particle.getVelocity();
-        		
-        		Vector3D dampingForce=dampingDirection.scalarMultiply(-dampingCoeficient);
-        		particle.addForce(dampingForce);
-        		
-        		
-        	}
-        	
+        if (parameters.isDampingEnabled()) {
+
+            double dampingCoeficient = parameters.getViscousDampingCoeficient();
+            double eps = Math.pow(10, -5);
+
+            for (FabricParticle particle : particleSet) {
+
+                final double velocity = particle.getVelocity().getNorm();
+
+                if (velocity < eps) {
+                    continue;
+                }
+
+                final Vector3D dampingForce = particle.getVelocity().scalarMultiply(-dampingCoeficient);
+                particle.addForce(dampingForce);
+
+            }
         }
-        
 
         //Integramos el movimiento en base a las fuerzas
-        particleSet.stream()
+        particleSet.parallelStream()
                 .filter(particle -> !particle.isFixed())
                 .forEach(particle -> parameters.getIntegrator().next(particle));
 
@@ -101,7 +90,7 @@ public class FabricSimulation extends TimeDrivenSimulation {
         //Si se debe escribir, se guarda una instantanea de las particulas
         if (shouldWrite()) {
             parameters.getWriter().write(getCurrentTime(), particleSet);
-            parameters.getEnergyWriter().writeEnergies(getCurrentTime(), particleSet,springSet);
+            parameters.getEnergyWriter().writeEnergies(getCurrentTime(), particleSet, springSet);
         }
 
         //Reseteamos los resortes p
@@ -110,11 +99,11 @@ public class FabricSimulation extends TimeDrivenSimulation {
         return getCurrentTime();
     }
 
-	@Override
-	public long stop() {
-		parameters.getWriter().close();
-		parameters.getEnergyWriter().close();
-		return System.currentTimeMillis() - startTime;
-	}
+    @Override
+    public long stop() {
+        parameters.getWriter().close();
+        parameters.getEnergyWriter().close();
+        return System.currentTimeMillis() - startTime;
+    }
 
 }

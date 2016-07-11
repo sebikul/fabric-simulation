@@ -21,11 +21,12 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
     private double initialZ = 0;
 
     private boolean gravityEnabled = false;
+    private boolean torsionSpringsEnabled = false;
 
     private boolean fixParticles;
 
-    private double viscousDamping=-1.0;
-    
+    private double viscousDamping = -1.0;
+
     public double getRadius() {
         return radius;
     }
@@ -116,7 +117,7 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
                 (particleSeparation != 0) &&
                 (torsionSpringConstant != 0) &&
                 (torsionSpringNaturalAngle != -1) &&
-                (viscousDamping!=-1)&&
+                (viscousDamping != -1) &&
                 super.areParametersSet();
     }
 
@@ -159,14 +160,22 @@ public class FabricSimulationParameters extends TimeDrivenSimulationParameters {
     public boolean isGravityEnabled() {
         return gravityEnabled;
     }
-    public double getViscousDampingCoeficient(){
-    	// 2* sqrt(2/5*K*M*R^2)
-        //return  2.0 * Math.sqrt(springConstant * (2.0 / 5.0) * mass *Math.pow(radius, 2));
-    	//return Math.pow(10, -1);
-    	return viscousDamping;
+
+    public double getViscousDampingCoeficient() {
+        return viscousDamping;
     }
-    public FabricSimulationParameters setViscousDamping(double coefcient){
-    	this.viscousDamping=coefcient;
-    	return this;
+
+    public FabricSimulationParameters setViscousDamping(double coeficient) {
+        this.viscousDamping = coeficient;
+        return this;
+    }
+
+    public FabricSimulationParameters setTorsionSpringsEnabled(final boolean torsion) {
+        this.torsionSpringsEnabled = torsion;
+        return this;
+    }
+
+    public boolean isTorsionSpringsEnabled() {
+        return torsionSpringsEnabled;
     }
 }

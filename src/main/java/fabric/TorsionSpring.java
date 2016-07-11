@@ -12,7 +12,7 @@ public class TorsionSpring implements ISpring {
     private boolean hasBeenApplied = false;
 
     private final double k;
-   // private final double gamma;
+    private final double gamma;
     private final double naturalAngle;
 
     private double previousAngle;
@@ -33,9 +33,8 @@ public class TorsionSpring implements ISpring {
         this.k = k;
 
         // 2* sqrt(2/5*K*M*R^2)
-        //this.gamma = 2.0 * Math.sqrt(k * (2.0 / 5.0) * through.getMass() * through.getRadius() * through.getRadius());
-        
-       // this.gamma=2*Math.pow(10, -7);
+        this.gamma = 2.0 * Math.sqrt(k * (2.0 / 5.0) * through.getMass() * through.getRadius() * through.getRadius());
+
         this.naturalAngle = naturalAngle;
 
         final Vector3D distanceVector1 = through.getPosition().subtract(particles[0].getPosition());
@@ -59,12 +58,12 @@ public class TorsionSpring implements ISpring {
         if (angle == naturalAngle) {
             return;
         }
-        
+
         double springTorque = -k * (angle - naturalAngle);
 
-//        if (damping) {
-//            springTorque -= gamma * (angle - previousAngle) / stepInterval;
-//        }
+        if (damping) {
+            springTorque -= gamma * (angle - previousAngle) / stepInterval;
+        }
 
         final double distance1 = distanceVector1.getNorm();
         final double distance2 = distanceVector2.getNorm();
@@ -77,15 +76,13 @@ public class TorsionSpring implements ISpring {
 //        final Vector3D springForceVersor1 = orthogonalVector.crossProduct(distanceVector1).normalize();
 //        final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1);
         final Vector3D springForceVersor1 = orthogonalVector.crossProduct(distanceVector1);
-        //final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1 / springForceVersor1.getNorm());
-        final Vector3D springForceVector1 = springForceVersor1.normalize().scalarMultiply(springForce1);
+        final Vector3D springForceVector1 = springForceVersor1.scalarMultiply(springForce1 / springForceVersor1.getNorm());
         particles[0].addForce(springForceVector1);
 
 //        final Vector3D springForceVersor2 = orthogonalVector.crossProduct(distanceVector2).normalize();
 //        final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2);
         final Vector3D springForceVersor2 = orthogonalVector.crossProduct(distanceVector2);
-       // final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2 / springForceVersor2.getNorm());
-        final Vector3D springForceVector2 = springForceVersor2.normalize().scalarMultiply(springForce2);
+        final Vector3D springForceVector2 = springForceVersor2.scalarMultiply(springForce2 / springForceVersor2.getNorm());
         particles[1].addForce(springForceVector2);
 
         previousAngle = angle;
@@ -112,28 +109,20 @@ public class TorsionSpring implements ISpring {
     public void setDamping(boolean damping) {
         this.damping = damping;
     }
-    
-    
+
     @Override
-	public double getElasticEnergy() {
-		return 0.5*k*Math.pow(this.getCompression(), 2);
-	}
-	
-	public double getCompression(){
-		 final Vector3D distanceVector1 = through.getPosition().subtract(particles[0].getPosition());
-	        final Vector3D distanceVector2 = particles[1].getPosition().subtract(through.getPosition());
+    public double getElasticEnergy() {
+        final double compression = this.getCompression();
+        return 0.5 * k * compression * compression;
+    }
 
-	        final double angle = Vector3D.angle(distanceVector1, distanceVector2);
+    public double getCompression() {
+        final Vector3D distanceVector1 = through.getPosition().subtract(particles[0].getPosition());
+        final Vector3D distanceVector2 = particles[1].getPosition().subtract(through.getPosition());
+
+        final double angle = Vector3D.angle(distanceVector1, distanceVector2);
 
 
-	       return angle-naturalAngle;
-	}
-	
-	public  VerletIntegratableParticle[] getParticles(){
-		return particles;
-	}
-	public VerletIntegratableParticle getThrough(){
-		return this.through;
-	}
-	
+        return angle - naturalAngle;
+    }
 }

@@ -68,18 +68,50 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
             }
         }
 
+        System.out.println("Adding structural springs...");
         addFabricSprings();
-      //  addTorsionSprings();
+
+        if (parameters.isTorsionSpringsEnabled()) {
+            System.out.println("Adding torsion springs...");
+            addTorsionSprings();
+        }
 
         if (parameters.hasToFixParticles()) {
             setFixedParticles();
         }
 
-//        particleArray[0][1].setFixed(true);
-//        particleArray[0][2].setFixed(true);
+//
+//        for (int k = 0; k < parameters.getWidth(); k++) {
+//            particleArray[19][k].setFixed(true);
+//        }
+//
+//        for (int k = 0; k < parameters.getHeight(); k++) {
+//            particleArray[k][0].setFixed(true);
+//        }
+//
+//        particleArray[0][19].addForce(new Vector3D(0, 0, 10000000.0));
+
+//        particleArray[0][19].setFixed(true);
+//        particleArray[19][0].addForce(new Vector3D(0, 0, 10000000.0));
+//        particleArray[19][19].addForce(new Vector3D(0, 0, 10000000.0));
+        //particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 6.0));
+
+//
+//        particleArray[19][0].setFixed(true);
+//        particleArray[19][19].setFixed(true);
+//        particleArray[19][0].setFixed(true);
+        //particleArray[19][19].setFixed(true);
+        //particleArray[19][19].setFixed(true);
 //
 //        particleArray[0][0].setInitialPosition(new Vector3D(3, 3, 0));
         //particleArray[0][0].addForce(new Vector3D(-1000, 0, 0));
+
+
+        //fuerza inicial
+        particleArray[0][0].addForce(new Vector3D(0, 0, 10000000.0));
+        particleArray[0][19].addForce(new Vector3D(0, 0, -10000000.0));
+
+        //particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 6.0));
 
         System.out.println("FabricSystemGenerator.generateParticles: Done!");
         hasGeneratedParticles = true;
@@ -146,13 +178,17 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
 
                     VerletIntegratableParticle[] particles = new VerletIntegratableParticle[]{currentParticle, otherParticle};
 
-                    double localSpringNaturalDistance = springNaturalDistance;
+                    final double distance = particles[1].getPosition().subtract(particles[0].getPosition()).getNorm();
 
-                    if (xPos != j && yPos != i) {
+
+                    double localSpringNaturalDistance = distance;
+
+
+                    //if (xPos != j && yPos != i) {
                         //Resorte en diagonal
 
-                        localSpringNaturalDistance = Math.sqrt(2 * particleSeparation * particleSeparation);
-                    }
+                        //localSpringNaturalDistance = Math.sqrt(2 * distance * distance);
+                    //}
 
                     ISpring spring = new FabricSpring(particles, springConstant, localSpringNaturalDistance, parameters.getStepInterval());
                     spring.setDamping(parameters.isDampingEnabled());
@@ -161,12 +197,6 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
                 }
             }
         }
-
-        //fuerza inicial
-        particleArray[0][0].addForce(new Vector3D(0, 0, 10000000.0));
-
-        //particleArray[0][0].setInitialPosition(new Vector3D(0, 0, 6.0));
-
     }
 
     private void addTorsionSprings() {
@@ -349,10 +379,20 @@ public class FabricSystemGenerator implements IParticleSystemGenerator {
             }
         }
 
+        System.out.println("Adding structural springs...");
         addFabricSprings();
-        addTorsionSprings();
 
-        setFixedParticles();
+        if (parameters.isTorsionSpringsEnabled()) {
+            System.out.println("Adding torsion springs...");
+            addTorsionSprings();
+        }
+
+        if (parameters.hasToFixParticles()) {
+            System.out.println("Fixing particles...");
+            setFixedParticles();
+        }
+
+        //particleArray[0][0].addForce(new Vector3D(0, 0, -10000000.0));
 
         System.out.println("FabricSystemGenerator.generateParticlesSinusoidal: Done!");
         hasGeneratedParticles = true;

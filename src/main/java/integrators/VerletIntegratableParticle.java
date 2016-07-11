@@ -6,7 +6,6 @@ import particle.Abstract3DParticle;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 public abstract class VerletIntegratableParticle extends Abstract3DParticle implements IIntegratableParticle {
@@ -19,7 +18,7 @@ public abstract class VerletIntegratableParticle extends Abstract3DParticle impl
 
         this.previousPosition = position;
 
-        this.forces =new ArrayList<>();
+        this.forces = Collections.synchronizedList(new ArrayList<>());
     }
 
     @Override

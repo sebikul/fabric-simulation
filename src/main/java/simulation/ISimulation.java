@@ -8,6 +8,5 @@ public interface ISimulation {
     double step();
 
     long stop();
-
 }
 

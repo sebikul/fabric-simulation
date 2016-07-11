@@ -9,11 +9,7 @@ public class SimulationParameters {
     private Integrator integrator = null;
     private ParticleWriter writer = null;
     private double writerInterval = 0;
-    private EnergyWriter energyWriter=null;
-    
-    
-    public SimulationParameters() {
-    }
+    private EnergyWriter energyWriter = null;
 
     public final Integrator getIntegrator() {
         return integrator;
@@ -25,6 +21,10 @@ public class SimulationParameters {
 
     public final double getWriterInterval() {
         return writerInterval;
+    }
+
+    public final EnergyWriter getEnergyWriter() {
+        return energyWriter;
     }
 
     public SimulationParameters setIntegrator(Integrator integrator) {
@@ -43,17 +43,11 @@ public class SimulationParameters {
     }
 
     public boolean areParametersSet() {
-        return (writerInterval != 0) && (writer != null) && (integrator != null);
+        return (writerInterval != 0) && (writer != null) && (integrator != null) && (energyWriter != null);
     }
 
-	public SimulationParameters setEnergyWriter(EnergyWriter energyWriter) {
-		
-		this.energyWriter=energyWriter;
-		
-		return this;
-	}
-
-	public final EnergyWriter getEnergyWriter(){
-		return energyWriter;
-	}
+    public SimulationParameters setEnergyWriter(EnergyWriter energyWriter) {
+        this.energyWriter = energyWriter;
+        return this;
+    }
 }
